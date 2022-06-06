@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:wpstickermaker/pages/main_page/main_page.dart';
 
 class App extends StatefulWidget {
@@ -11,7 +12,8 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
-    return  const MaterialApp(
+    return  const GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       home: MainPage(),
     );
   }

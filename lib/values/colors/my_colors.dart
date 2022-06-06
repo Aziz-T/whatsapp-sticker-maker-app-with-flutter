@@ -22,4 +22,7 @@ class MyColors{
   static const whiteGreen = Color.fromARGB(255, 236,239,163);
   static const lightWhiteGreen = Color.fromARGB(255, 246,245,197);
 
+
+  static const lowGrey = Color.fromARGB(255, 222, 222, 222);
+
 }

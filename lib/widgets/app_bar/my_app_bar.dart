@@ -7,12 +7,16 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text( title ??"App"),
+      toolbarHeight: 56,
+      title: Text(
+        title ?? "App",
+        style: TextStyle(fontFamily: 'McLaren'),
+      ),
       elevation: 0,
       backgroundColor: Colors.transparent,
-      titleTextStyle: TextStyle(color: Colors.black87,
-      fontSize: 20,
-      fontWeight: FontWeight.bold),
+      titleTextStyle: TextStyle(
+          color: Colors.black87, fontSize: 20, fontWeight: FontWeight.bold),
+      automaticallyImplyLeading: false,
     );
   }
 
