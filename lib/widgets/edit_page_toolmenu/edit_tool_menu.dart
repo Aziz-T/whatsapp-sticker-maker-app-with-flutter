@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:wpstickermaker/providers/image_cropper_provider/image_editing_provider.dart';
 
 class EditToolMenu extends StatelessWidget {
   const EditToolMenu({Key? key}) : super(key: key);
@@ -22,7 +24,11 @@ class EditToolMenu extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            buildMenuItem(),
+            buildMenuItem(
+              onTap: (){
+                  context.read<ImageEditProvider>().play();
+              }
+            ),
             buildMenuItem(),
             buildMenuItem(),
             buildMenuItem(),
@@ -34,7 +40,10 @@ class EditToolMenu extends StatelessWidget {
     );
   }
 
-  Container buildMenuItem() => Container(
+  Widget buildMenuItem({VoidCallback? onTap}) {
+    return  InkWell(
+      onTap: onTap,
+      child: Container(
         margin: EdgeInsets.all(10),
         padding: EdgeInsets.all(10),
         // decoration: BoxDecoration(color: Colors.white, boxShadow: [
@@ -45,9 +54,11 @@ class EditToolMenu extends StatelessWidget {
         //     offset: Offset(0, 3), // changes position of shadow
         //   ),
         // ]),
-        child: Icon(
+        child: const Icon(
           Icons.add_a_photo,
           color: Colors.lightBlue,
         ),
-      );
+      ),
+    );
+  }
 }
