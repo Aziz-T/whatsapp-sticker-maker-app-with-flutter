@@ -11,12 +11,15 @@ import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,15 +31,19 @@ public class SomeView extends View implements View.OnTouchListener {
 
     Point mfirstpoint = null;
     boolean bfirstpoint = false;
-
+    public static byte[] croppedImageByteList;
+    byte[] bytes;
     Point mlastpoint = null;
-
+    int width ;
+    int height ;
     Bitmap bitmap ;
     Context mContext;
 
-    public SomeView(Context c, byte[] val) {
+    public SomeView(Context c, byte[] val,  int widthOfscreen , int heightOfScreen) {
         super(c);
-
+        width = widthOfscreen;
+        height = heightOfScreen;
+        bytes = val ;
         mContext = c;
         setFocusable(true);
         setFocusableInTouchMode(true);
@@ -190,7 +197,33 @@ public class SomeView extends View implements View.OnTouchListener {
                         // Yes button clicked
                         // bfirstpoint = false;
 
-                        Toast.makeText(mContext, "başarılı", Toast.LENGTH_SHORT).show();
+
+                        Bitmap bitmap2 = BitmapFactory.decodeByteArray(bytes, 0,bytes.length);
+
+                        Bitmap resultingImage = Bitmap.createBitmap(width,
+                                height, bitmap2.getConfig());
+
+                        Canvas canvas = new Canvas(resultingImage);
+                        Paint paint = new Paint();
+                        paint.setAntiAlias(true);
+
+                        Path path = new Path();
+                        for (int i = 0; i < SomeView.points.size(); i++) {
+                            path.lineTo(SomeView.points.get(i).x, SomeView.points.get(i).y);
+                        }
+                        canvas.drawPath(path, paint);
+
+                            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+
+
+                        canvas.drawBitmap(bitmap2, 0, 0, paint);
+
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        resultingImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        croppedImageByteList = stream.toByteArray();
+                        bitmap.recycle();
+
+                        Toast.makeText(mContext, "başarılı"+croppedImageByteList.length, Toast.LENGTH_SHORT).show();
 //                        intent = new Intent(mContext, CropActivity.class);
 //                        intent.putExtra("crop", true);
 //                        mContext.startActivity(intent);
