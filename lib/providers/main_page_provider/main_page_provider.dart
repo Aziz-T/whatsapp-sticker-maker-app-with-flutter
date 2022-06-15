@@ -22,6 +22,7 @@ class MainPageProvider extends ChangeNotifier{
   ];
 
   void onItemTapped(int index) {
+
       _currentIndex = index;
       _currentPage = _widgetOptions[_currentIndex];
       notifyListeners();

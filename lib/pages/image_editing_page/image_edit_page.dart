@@ -40,5 +40,4 @@ class _ImageEditPageState extends State<ImageEditPage> {
       ),
     );
   }
-
 }

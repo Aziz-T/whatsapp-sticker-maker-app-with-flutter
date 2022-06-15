@@ -21,8 +21,8 @@ class ImageEditProvider extends ChangeNotifier {
     //
     Map<dynamic, Uint8List> map = {"data": imagebytes};
     try {
-      var value = await _channel.invokeMethod('goIntent', map);
-      print("GGGGGGGG"+value.toString());
+      var value = await _channel.invokeMethod('goIntent', map).then((value) =>  print("GGGGGGGG"+value.toString()));
+
       // return await _channel.invokeMethod('goIntent', map);
     } on PlatformException catch (e) {}
   }

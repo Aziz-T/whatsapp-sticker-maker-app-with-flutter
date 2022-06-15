@@ -17,6 +17,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
@@ -38,8 +40,9 @@ public class SomeView extends View implements View.OnTouchListener {
     int height ;
     Bitmap bitmap ;
     Context mContext;
+    LinearLayout line;
 
-    public SomeView(Context c, byte[] val,  int widthOfscreen , int heightOfScreen) {
+    public SomeView(Context c, byte[] val,  LinearLayout line1, int widthOfscreen , int heightOfScreen) {
         super(c);
         width = widthOfscreen;
         height = heightOfScreen;
@@ -47,6 +50,7 @@ public class SomeView extends View implements View.OnTouchListener {
         mContext = c;
         setFocusable(true);
         setFocusableInTouchMode(true);
+        line = line1;
         bitmap =  BitmapFactory.decodeByteArray(val, 0,val.length);
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStyle(Paint.Style.STROKE);
@@ -58,6 +62,11 @@ public class SomeView extends View implements View.OnTouchListener {
         points = new ArrayList<Point>();
 
         bfirstpoint = false;
+
+
+
+
+
     }
 
     public SomeView(Context context, AttributeSet attrs) {
@@ -187,7 +196,47 @@ public class SomeView extends View implements View.OnTouchListener {
         invalidate();
     }
 
-    private void showcropdialog() {
+    public void showcropdialog() {
+
+        ImageView compositeImageView = new ImageView(mContext);
+
+
+        Bitmap resultingImage = Bitmap.createBitmap(width,
+                height, bitmap.getConfig());
+
+        Canvas canvas = new Canvas(resultingImage);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+
+        Path path = new Path();
+        for (int i = 0; i < SomeView.points.size(); i++) {
+            path.lineTo(SomeView.points.get(i).x, SomeView.points.get(i).y);
+        }
+        canvas.drawPath(path, paint);
+
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        resultingImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+
+        canvas.drawBitmap(bitmap, 0, 0, paint);
+        compositeImageView.setMinimumHeight(400);
+        compositeImageView.setImageBitmap(resultingImage);
+        line.removeAllViews();
+        line.addView(compositeImageView);
+
+
+//        Intent intent;
+//        intent = new Intent(this.mContext, CropActivity.class);
+//        intent.putExtra("crop", true);
+//        mContext.startActivity(intent);
+
+    }
+
+
+
+    private void showcropdialogs() {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -196,46 +245,23 @@ public class SomeView extends View implements View.OnTouchListener {
                     case DialogInterface.BUTTON_POSITIVE:
                         // Yes button clicked
                         // bfirstpoint = false;
-
-
-                        Bitmap bitmap2 = BitmapFactory.decodeByteArray(bytes, 0,bytes.length);
-
-                        Bitmap resultingImage = Bitmap.createBitmap(width,
-                                height, bitmap2.getConfig());
-
-                        Canvas canvas = new Canvas(resultingImage);
-                        Paint paint = new Paint();
-                        paint.setAntiAlias(true);
-
-                        Path path = new Path();
-                        for (int i = 0; i < SomeView.points.size(); i++) {
-                            path.lineTo(SomeView.points.get(i).x, SomeView.points.get(i).y);
-                        }
-                        canvas.drawPath(path, paint);
-
-                            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-
-
-                        canvas.drawBitmap(bitmap2, 0, 0, paint);
-
                         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        resultingImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                        croppedImageByteList = stream.toByteArray();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        byte[] byteArray = stream.toByteArray();
                         bitmap.recycle();
 
-                        Toast.makeText(mContext, "başarılı"+croppedImageByteList.length, Toast.LENGTH_SHORT).show();
-//                        intent = new Intent(mContext, CropActivity.class);
-//                        intent.putExtra("crop", true);
-//                        mContext.startActivity(intent);
+                        intent = new Intent(mContext, CropActivity.class);
+                        intent.putExtra("crop", true);
+                        mContext.startActivity(intent);
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
                         // No button clicked
-//
-//                        intent = new Intent(mContext, CropActivity.class);
-//                        intent.putExtra("crop", false);
-//                        mContext.startActivity(intent);
-                        Toast.makeText(mContext, "başarılı", Toast.LENGTH_SHORT).show();
+
+                        intent = new Intent(mContext, CropActivity.class);
+                        intent.putExtra("crop", false);
+                        mContext.startActivity(intent);
+
                         bfirstpoint = false;
                         // resetView();
 
@@ -251,6 +277,9 @@ public class SomeView extends View implements View.OnTouchListener {
                 .setCancelable(false);
     }
 }
+
+
+
 
 
 
