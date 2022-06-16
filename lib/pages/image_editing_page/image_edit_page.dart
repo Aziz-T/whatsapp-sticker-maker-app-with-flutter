@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wpstickermaker/widgets/app_bar/my_app_bar.dart';
@@ -26,7 +29,10 @@ class _ImageEditPageState extends State<ImageEditPage> {
         child: Column(
           children: [
             Container(height: size.width, width: size.width,
-            child: Image.file(widget.image!)),
+            child:
+            context.watch<ImageEditProvider>().val != null ?
+            Image.memory(Uint8List.fromList(context.read<ImageEditProvider>().val)):
+            Image.file(widget.image!)),
             Spacer(),
             EditToolMenu(
               children: [

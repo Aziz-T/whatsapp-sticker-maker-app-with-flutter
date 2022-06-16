@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -7,7 +8,7 @@ import 'package:flutter/services.dart';
 
 class ImageEditProvider extends ChangeNotifier {
    final MethodChannel _channel = const MethodChannel('samples.flutter.dev/battery');
-
+    dynamic val;
    Future<void> cutImage(String image) async {
 
      File imagefile = File(image); //convert Path to File
@@ -21,8 +22,12 @@ class ImageEditProvider extends ChangeNotifier {
     //
     Map<dynamic, Uint8List> map = {"data": imagebytes};
     try {
-      var value = await _channel.invokeMethod('goIntent', map).then((value) =>  print("GGGGGGGG"+value.toString()));
-
+       await _channel.invokeMethod('goIntent', map).then((value) {
+         val = value;
+         log(value.toString());
+       });
+      // final Image image = Image.memory(val.buffer.asUint8List());
+      notifyListeners();
       // return await _channel.invokeMethod('goIntent', map);
     } on PlatformException catch (e) {}
   }

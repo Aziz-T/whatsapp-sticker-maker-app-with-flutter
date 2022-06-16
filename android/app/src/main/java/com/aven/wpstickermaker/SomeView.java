@@ -225,7 +225,7 @@ public class SomeView extends View implements View.OnTouchListener {
         compositeImageView.setImageBitmap(resultingImage);
         line.removeAllViews();
         line.addView(compositeImageView);
-
+        croppedImageByteList = byteArray;
 
 //        Intent intent;
 //        intent = new Intent(this.mContext, CropActivity.class);
@@ -234,7 +234,13 @@ public class SomeView extends View implements View.OnTouchListener {
 
     }
 
-
+//    public static String convert(Bitmap bitmap)
+//    {
+//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+//
+//        return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
+//    }
 
     private void showcropdialogs() {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
