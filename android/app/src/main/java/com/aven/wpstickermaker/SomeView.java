@@ -216,11 +216,14 @@ public class SomeView extends View implements View.OnTouchListener {
 
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
 
+
+
+        canvas.drawBitmap(bitmap, 0, 0, paint);
+
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         resultingImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteArray = stream.toByteArray();
 
-        canvas.drawBitmap(bitmap, 0, 0, paint);
         compositeImageView.setMinimumHeight(400);
         compositeImageView.setImageBitmap(resultingImage);
         line.removeAllViews();

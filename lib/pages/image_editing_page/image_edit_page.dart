@@ -28,17 +28,30 @@ class _ImageEditPageState extends State<ImageEditPage> {
         width: size.width,
         child: Column(
           children: [
-            Container(height: size.width, width: size.width,
-            child:
-            context.watch<ImageEditProvider>().val != null ?
-            Image.memory(Uint8List.fromList(context.read<ImageEditProvider>().val)):
-            Image.file(widget.image!)),
+            Container(
+                height: size.width,
+                width: size.width,
+                child: context.watch<ImageEditProvider>().val != null
+                    ? Image.memory(Uint8List.fromList(
+                        context.read<ImageEditProvider>().val))
+                    : Image.file(widget.image!)),
             Spacer(),
             EditToolMenu(
               children: [
-                ToolMenuItem(onTap: (){
-                  context.read<ImageEditProvider>().cutImage(widget.imagePath!);
-                },)
+                ToolMenuItem(
+                  iconData: Icons.cut,
+                  onTap: () {
+                    context
+                        .read<ImageEditProvider>()
+                        .cutImage(widget.imagePath!);
+                  },
+                ),
+                ToolMenuItem(
+                  iconData: Icons.phonelink_erase_rounded,
+                  onTap: () {
+
+                  },
+                )
               ],
             )
           ],
