@@ -4,9 +4,19 @@ class AddTextWidget extends StatelessWidget {
   const AddTextWidget({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.red,
-      child: TextField(
+    return Draggable(
+      feedback: buildTextField(),
+      child: Container(
+        height: 40,
+        width: 90,
+        color: Colors.red,
+        child: buildTextField(),
+      ),
+    );
+  }
+
+  Widget buildTextField() {
+    return TextField(
         keyboardType: TextInputType.multiline,
         minLines: 1,
         maxLines: 10,
@@ -18,7 +28,6 @@ class AddTextWidget extends StatelessWidget {
           disabledBorder: InputBorder.none,
           border: InputBorder.none
         ),
-      ),
-    );
+      );
   }
 }
