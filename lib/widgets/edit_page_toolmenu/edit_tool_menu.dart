@@ -12,9 +12,12 @@ class EditToolMenu extends StatelessWidget {
       width: children != null ? null : size.width,
       margin: EdgeInsets.all(20),
       padding: EdgeInsets.all(5),
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [
+      decoration: BoxDecoration(
+          color: Colors.white, 
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+          boxShadow: [
         BoxShadow(
-          color: Colors.grey.withOpacity(0.5),
+          color: Colors.grey.withOpacity(0.2),
           spreadRadius: 1,
           blurRadius: 3,
           offset: Offset(0, 3), // changes position of shadow
@@ -24,11 +27,9 @@ class EditToolMenu extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: children??[],
+          children: children ?? [],
         ),
       ),
     );
   }
-
-
 }

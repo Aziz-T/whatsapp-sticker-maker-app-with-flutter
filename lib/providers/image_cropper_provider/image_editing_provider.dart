@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:image_painter/image_painter.dart';
 
 class ImageEditProvider extends ChangeNotifier {
    final MethodChannel _channel = const MethodChannel('samples.flutter.dev/battery');
@@ -57,5 +58,18 @@ class ImageEditProvider extends ChangeNotifier {
     val = await croppedFile?.readAsBytes() as Uint8List;
 
     notifyListeners();
+  }
+
+  Future<void> paintImage() async {
+    final _imageKey = GlobalKey<ImagePainterState>();
+//Provide controller to the painter.
+    ImagePainter.network("https://sample_image.png",
+        key: _imageKey,scalable: true);
+
+    ///Export the image:
+    Uint8List? byteArray = await _imageKey.currentState?.exportImage();
+//Now you use `Uint8List` data and convert it to file.
+    File imgFile = new File('directoryPath/fileName.png');
+
   }
 }
