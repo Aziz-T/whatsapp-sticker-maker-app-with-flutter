@@ -9,8 +9,9 @@
     <LinearLayout
         android:id="@+id/line"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:orientation="vertical" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/teal_200"/>
 
     <Button
         android:id="@+id/doneButton"

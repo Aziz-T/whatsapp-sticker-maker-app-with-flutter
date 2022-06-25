@@ -52,6 +52,7 @@ public class SomeView extends View implements View.OnTouchListener {
         setFocusableInTouchMode(true);
         line = line1;
         bitmap =  BitmapFactory.decodeByteArray(val, 0,val.length);
+        bitmap = Bitmap.createScaledBitmap(bitmap, width, bitmap.getHeight(), false);
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStyle(Paint.Style.STROKE);
         paint.setPathEffect(new DashPathEffect(new float[] { 10, 20 }, 0));

@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:wpstickermaker/providers/home_page_provider/home_page_provider.dart';
+import 'package:wpstickermaker/providers/image_cropper_provider/image_editing_provider.dart';
 import 'package:wpstickermaker/widgets/app_bar/my_app_bar.dart';
 import 'package:wpstickermaker/widgets/create_stickers_button/create_stickers_button.dart';
 
@@ -32,7 +30,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           CreateStickerButton(
             onTap: () {
-              context.read<HomePageProvider>().getImage();
+              context.read<ImageEditProvider>().getImage();
             },
           ),
           SizedBox(
