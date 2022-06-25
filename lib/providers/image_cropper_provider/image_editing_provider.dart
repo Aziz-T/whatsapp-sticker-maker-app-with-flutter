@@ -23,6 +23,7 @@ class ImageEditProvider extends ChangeNotifier {
   final MethodChannel _channel =
       const MethodChannel('samples.flutter.dev/battery');
   dynamic val;
+  dynamic mainImage;
 
   setVal(dynamic img) {
     val = img;

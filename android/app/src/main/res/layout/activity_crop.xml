@@ -6,12 +6,22 @@
     android:layout_height="match_parent"
     tools:context=".CropActivity">
 
+    <Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:title="Free Hand Crop"
+        android:layout_alignParentTop="true"
+        android:background="@color/white"
+        />
+
+
     <LinearLayout
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/teal_200"/>
+        android:layout_centerInParent="true"
+        />
 
     <Button
         android:id="@+id/doneButton"
