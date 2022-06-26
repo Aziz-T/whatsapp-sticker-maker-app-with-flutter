@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -103,9 +104,22 @@ class ImageEditProvider extends ChangeNotifier {
     }catch(e){
       print("eeeeeeeeeeee$e");
     }
-
-
-
     notifyListeners();
   }
+
+  Future<void> saveImage(dynamic imageData)async {
+    print("SAVE Image");
+    final buffer = imageData.buffer;
+    Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+    var filePath =
+        tempPath + '/file_01.png'; // file_01.tmp is dump file, can be anything
+    File file = await File(filePath)
+        .writeAsBytes(buffer.asUint8List(imageData.offsetInBytes, imageData.lengthInBytes));
+
+    GallerySaver.saveImage(file.path).then((value) {
+      print(value.toString());
+    });
+  }
+
 }

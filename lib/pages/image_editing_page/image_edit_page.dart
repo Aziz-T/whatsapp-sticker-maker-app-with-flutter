@@ -24,11 +24,14 @@ class _ImageEditPageState extends State<ImageEditPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: MyAppBar(title: "Create Sticker", onPressed: () {}),
-      body: Consumer<ImageEditProvider>(
-        builder: (context, provider, child) {
-          return Container(
+    return Consumer<ImageEditProvider>(builder: (context, provider, child) {
+      return Scaffold(
+          appBar: MyAppBar(
+              title: "Create Sticker",
+              onPressed: () {
+                context.read<ImageEditProvider>().saveImage(provider.val);
+              }),
+          body: Container(
             width: size.width,
             child: Column(children: [
               SizedBox(
@@ -43,7 +46,7 @@ class _ImageEditPageState extends State<ImageEditPage> {
                   ToolMenuItem(
                     iconData: Icons.image_aspect_ratio,
                     onTap: () {
-                      if(widget.imagePath!=null) {
+                      if (widget.imagePath != null) {
                         provider.cutImage(widget.imagePath!, provider.val);
                       }
                     },
@@ -51,8 +54,8 @@ class _ImageEditPageState extends State<ImageEditPage> {
                   ToolMenuItem(
                     iconData: Icons.cut,
                     onTap: () async {
-                      await provider
-                          .imageCropSquare(widget.imagePath!, provider.val);
+                      await provider.imageCropSquare(
+                          widget.imagePath!, provider.val);
                     },
                   ),
                   ToolMenuItem(
@@ -66,9 +69,7 @@ class _ImageEditPageState extends State<ImageEditPage> {
                 ],
               ),
             ]),
-          );
-        }
-      ),
-    );
+          ));
+    });
   }
 }
