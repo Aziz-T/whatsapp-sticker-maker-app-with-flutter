@@ -25,12 +25,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.business),
-          label: 'Business',
+          icon: Icon(Icons.image),
+          label: 'Stickers',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.school),
-          label: 'School',
+          icon: Icon(Icons.settings_sharp),
+          label: 'Settings',
         ),
       ],
       currentIndex: context.watch<MainPageProvider>().currentIndex,

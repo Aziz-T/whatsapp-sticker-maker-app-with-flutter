@@ -53,7 +53,7 @@ dependencies:
   screenshot: ^1.2.3
   image_painter: ^0.4.6
   gallery_saver: ^2.3.2
-
+  shared_preferences: ^2.0.15
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wpstickermaker/models/saved_image_model/saved_image_model.dart';
 import 'package:wpstickermaker/providers/image_cropper_provider/image_editing_provider.dart';
 import 'package:wpstickermaker/widgets/app_bar/my_app_bar.dart';
 import 'package:wpstickermaker/widgets/create_stickers_button/create_stickers_button.dart';
@@ -15,6 +14,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      context.read<ImageEditProvider>().getImageList();
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,14 +61,19 @@ class _HomePageState extends State<HomePage> {
               buildHistoryText(),
             ],
           ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: const [
-                SavedImageItem(),
-                SavedImageItem(),
-                SavedImageItem(),
-              ],
+          Expanded(
+            child: Consumer<ImageEditProvider>(
+              builder: (context, snapshot, _) {
+                return ListView.builder(
+                    reverse: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: snapshot.imageList.length,
+                    itemBuilder: (context, index){
+                  return SavedImageItem(
+                      filePath: snapshot.imageList[index],
+                  );
+                });
+              }
             ),
           ),
           SizedBox(

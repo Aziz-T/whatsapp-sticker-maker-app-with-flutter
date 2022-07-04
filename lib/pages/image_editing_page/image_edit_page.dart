@@ -29,7 +29,8 @@ class _ImageEditPageState extends State<ImageEditPage> {
           appBar: MyAppBar(
               title: "Create Sticker",
               onPressed: () {
-                context.read<ImageEditProvider>().saveImage(provider.val);
+                provider.saveImage(provider.val);
+                Get.back();
               }),
           body: Container(
             width: size.width,

@@ -1,7 +1,26 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
-class SavedImageItem extends StatelessWidget {
-  const SavedImageItem({Key? key}) : super(key: key);
+class SavedImageItem extends StatefulWidget {
+  final String? filePath;
+  const SavedImageItem({Key? key, this.filePath}) : super(key: key);
+
+  @override
+  State<SavedImageItem> createState() => _SavedImageItemState();
+}
+
+class _SavedImageItemState extends State<SavedImageItem> {
+  File? file;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if(widget.filePath!=null) {
+      file = File(widget.filePath!);
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +41,7 @@ class SavedImageItem extends StatelessWidget {
       ),
       margin: EdgeInsets.all(10),
       padding: EdgeInsets.all(10),
-      child: Image.asset("assets/img.jpg"),
+      child: file!=null ? Image.file(file!):const SizedBox(),
     );
   }
 }

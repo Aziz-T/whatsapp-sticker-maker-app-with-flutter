@@ -2,24 +2,22 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:image_painter/image_painter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-
+import '../../core/storage_manager.dart';
 import '../../pages/image_editing_page/image_edit_page.dart';
+import '../../values/strings/strings.dart';
 
 class ImageEditProvider extends ChangeNotifier {
 
   final ImagePicker _picker = ImagePicker();
   String? imagePath;
-
+  List<String> imageList = [];
 
   final MethodChannel _channel =
       const MethodChannel('samples.flutter.dev/battery');
@@ -109,17 +107,25 @@ class ImageEditProvider extends ChangeNotifier {
 
   Future<void> saveImage(dynamic imageData)async {
     print("SAVE Image");
+
     final buffer = imageData.buffer;
     Directory tempDir = await getTemporaryDirectory();
     String tempPath = tempDir.path;
     var filePath =
-        tempPath + '/file_01.png'; // file_01.tmp is dump file, can be anything
+        tempPath + '/${DateTime.now()}.png'; // file_01.tmp is dump file, can be anything
     File file = await File(filePath)
         .writeAsBytes(buffer.asUint8List(imageData.offsetInBytes, imageData.lengthInBytes));
-
+    imageList.add(file.path);
+    StorageManager.setStringList(Strings.imageKey, imageList);
+    notifyListeners();
     GallerySaver.saveImage(file.path).then((value) {
       print(value.toString());
     });
+  }
+
+  Future<void> getImageList() async {
+    imageList = await StorageManager.getStringList()??[];
+    notifyListeners();
   }
 
 }
