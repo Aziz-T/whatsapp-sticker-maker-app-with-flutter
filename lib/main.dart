@@ -6,6 +6,7 @@ import 'package:wpstickermaker/providers/image_cropper_provider/image_editing_pr
 import 'package:wpstickermaker/providers/main_page_provider/main_page_provider.dart';
 
 import 'app.dart';
+import 'deneme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,5 +15,5 @@ Future<void> main() async {
     ChangeNotifierProvider(create: (context) => MainPageProvider()),
     ChangeNotifierProvider(create: (context) => HomePageProvider()),
     ChangeNotifierProvider(create: (context) => ImageEditProvider()),
-  ], child: const App()));
+  ], child: App()));
 }

@@ -1,100 +1,92 @@
-/*
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:whatsapp_stickers/exceptions.dart';
+import 'package:whatsapp_stickers/whatsapp_stickers.dart';
+import 'package:wpstickermaker/providers/image_cropper_provider/image_editing_provider.dart';
 
 
-  pickImage(BuildContext context) async {
-    try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (image == null) return;
-      final imageTemporary = File(image.path);
-      File? croppedFile = await ImageCropper().cropImage(
-          sourcePath: imageTemporary.path,
-          aspectRatioPresets: [
-            CropAspectRatioPreset.square,
-          ],
-          androidUiSettings: AndroidUiSettings(
-              toolbarTitle: AppStrings.cutImage,
-              toolbarColor: Theme.of(context).primaryColor,
-              toolbarWidgetColor: Colors.white,
-              initAspectRatio: CropAspectRatioPreset.original,
-              lockAspectRatio: true),
-          iosUiSettings: IOSUiSettings(
-            minimumAspectRatio: 1.0,
-          ));
-      imageFile = croppedFile;
-      imagePath = croppedFile?.path;
-      notifyListeners();
-      log(imagePath??"null");
-    } on PlatformException catch (e) {
-      p("GALLERY HATASI", e);
-    }
+class AppRoot extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('WhatsApp Stickers Flutter Demo'),
+        ),
+        body: Container(
+          child: Column(
+            children: <Widget>[
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 32.0),
+                  child: ElevatedButton(
+                    child: Text('Install from assets'),
+                    onPressed: (){installFromAssets(context);},
+                  ),
+                ),
+              ),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 32.0),
+                  child: Text('Install from remote'),
+                ),
+              ),
+            ],
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+          ),
+        ),
+      ),
+    );
   }
+}
 
-  pickCamera(BuildContext context) async {
-    try {
-      final photo = await ImagePicker().pickImage(source: ImageSource.camera);
-      if (photo == null) return;
-      final imageTemporary = File(photo.path);
-      File? croppedFile = await ImageCropper().cropImage(
-          sourcePath: imageTemporary.path,
-          aspectRatioPresets: [
-            CropAspectRatioPreset.square,
-          ],
-          androidUiSettings: AndroidUiSettings(
-              toolbarTitle: AppStrings.cutImage,
-              toolbarColor: Theme.of(context).primaryColor,
-              toolbarWidgetColor: Colors.white,
-              initAspectRatio: CropAspectRatioPreset.original,
-              lockAspectRatio: true),
-          iosUiSettings: IOSUiSettings(
-            minimumAspectRatio: 1.0,
-          ));
+const stickers = {
+  '01_Cuppy_smile.webp': ['☕', '🙂'],
+  '02_Cuppy_lol.webp': ['😄', '😀'],
+  '03_Cuppy_rofl.webp': ['😆', '😂'],
+  '04_Cuppy_sad.webp': ['😃', '😍'],
+  '05_Cuppy_cry.webp': ['😭', '💧'],
+  '06_Cuppy_love.webp': ['😍', '♥'],
+  '08_Cuppy_lovewithmug.webp': ['😍', '💑'],
+  '09_Cuppy_lovewithcookie.webp': ['😘', '🍪'],
+  '10_Cuppy_hmm.webp': ['🤔', '😐'],
+  '11_Cuppy_upset.webp': ['😱', '😵'],
+  '12_Cuppy_angry.webp': ['😡', '😠'],
+  '13_Cuppy_curious.webp': ['❓', '🤔'],
+  '14_Cuppy_weird.webp': ['🌈', '😜'],
+  '15_Cuppy_bluescreen.webp': ['💻', '😩'],
+  '16_Cuppy_angry.webp': ['😡', '😤'],
+  '17_Cuppy_tired.webp': ['😩', '😨'],
+  '18_Cuppy_workhard.webp': ['😔', '😨'],
+};
 
-      imageFile = croppedFile;
-      notifyListeners();
-    } on PlatformException catch (e) {
-      p("Camera HATASI", e);
-    }
+Future installFromAssets(BuildContext context) async {
+  var provider = Provider.of<ImageEditProvider>(context, listen: false);
+  var stickerPack = WhatsappStickers(
+    identifier: 'cuppyFlutterWhatsAppStickers',
+    name: 'Cuppy WhatsApp Stickers',
+    publisher: 'John Doe',
+    trayImageFileName: WhatsappStickerImage.fromAsset('assets/stickers/tray_Cuppy.png'),
+    publisherWebsite: '',
+    privacyPolicyWebsite: '',
+    licenseAgreementWebsite: '',
+  );
+
+
+  stickers.forEach((sticker, emojis) {
+    stickerPack.addSticker(WhatsappStickerImage.fromAsset('assets/stickers/$sticker'), emojis);
+  });
+
+  try {
+    await stickerPack.sendToWhatsApp();
+  } on WhatsappStickersException catch (e) {
+    print(e.cause);
   }
-Future<void> saveScreenshot(Uint8List pngBytes) async {
+}
 
-
-  // await requestPermission();
-
-  Map<Permission, PermissionStatus> statuses = await [
-    Permission.storage,
-  ].request();
-
-  final info = statuses[Permission.storage];
-  p("info", info);
-  if(info==PermissionStatus.granted){
-    try {
-      //extract bytes
-      //create file
-      final String dir = (await getExternalStorageDirectory())!.path;
-      final String fullPath = '$dir/${"img"}.jpg';
-      File capturedFile = File(fullPath);
-      await capturedFile.writeAsBytes(pngBytes);
-      p("PATH", capturedFile.path);
-      GallerySaver.saveImage(capturedFile.path).then((value) async {
-
-        FlutterShare.shareFile(
-            title: 'Revel Move Story',
-            filePath: capturedFile.path,
-            fileType: 'image/jpg'
-        );
-      });
-    } catch (e) {
-      p("ERROR",e.toString());
-    }
-  }else {
-    out("red");
-  }
-
-
-
-  }
-
-
-
-
- */

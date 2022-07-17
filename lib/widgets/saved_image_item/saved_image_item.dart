@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 
 class SavedImageItem extends StatefulWidget {
   final String? filePath;
-  const SavedImageItem({Key? key, this.filePath}) : super(key: key);
+  final bool isSelected;
+  final VoidCallback? onTap;
+  const SavedImageItem({Key? key, this.filePath, this.isSelected=false, this.onTap}) : super(key: key);
 
   @override
   State<SavedImageItem> createState() => _SavedImageItemState();
@@ -24,24 +26,28 @@ class _SavedImageItemState extends State<SavedImageItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 150,
-      width: 150,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 0.5,
-            blurRadius: 1,
-            offset: Offset(0, 1), // changes position of shadow
-          ),
-        ]
+    return InkWell(
+      onTap: widget.onTap,
+      child: Container(
+        height: 150,
+        width: 150,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: widget.isSelected ? Border.all(color: Colors.blue,width: 2):null,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 0.5,
+              blurRadius: 1,
+              offset: Offset(0, 1), // changes position of shadow
+            ),
+          ]
+        ),
+        margin: EdgeInsets.all(10),
+        padding: EdgeInsets.all(10),
+        child: file!=null ? Image.file(file!):const SizedBox(),
       ),
-      margin: EdgeInsets.all(10),
-      padding: EdgeInsets.all(10),
-      child: file!=null ? Image.file(file!):const SizedBox(),
     );
   }
 }

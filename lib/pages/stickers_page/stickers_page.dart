@@ -14,13 +14,20 @@ class StickersPage extends StatefulWidget {
 }
 
 class _StickersPageState extends State<StickersPage> {
+  bool isSelected=false;
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(title: "Stickers List"),
       body: Column(
         children: [
-          AddToWhatsapp(),
+          AddToWhatsapp(
+            onTap: (){
+              context.read<ImageEditProvider>().addToWhatsapp();
+            },
+          ),
           Expanded(
             child: Consumer<ImageEditProvider>(builder: (context, snapshot, _) {
               return GridView.count(
@@ -28,6 +35,13 @@ class _StickersPageState extends State<StickersPage> {
                 children: List.generate(snapshot.imageList.length, (index) {
                   return SavedImageItem(
                     filePath: snapshot.imageList[index],
+                    isSelected: isSelected,
+                    onTap: (){
+                      setState(() {
+                        isSelected = !isSelected;
+                      });
+
+                    },
                   );
                 }),
               );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:wpstickermaker/deneme.dart';
 import 'package:wpstickermaker/pages/image_paint_page/image_paint_page.dart';
 import 'package:wpstickermaker/widgets/app_bar/my_app_bar.dart';
 import 'package:wpstickermaker/widgets/edit_page_toolmenu/edit_tool_menu.dart';
@@ -31,6 +32,7 @@ class _ImageEditPageState extends State<ImageEditPage> {
               onPressed: () {
                 provider.saveImage(provider.val);
                 Get.back();
+                // provider.installFromAssets();
               }),
           body: Container(
             width: size.width,

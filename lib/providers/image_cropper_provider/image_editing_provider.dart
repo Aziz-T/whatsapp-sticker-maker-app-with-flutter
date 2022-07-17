@@ -4,17 +4,23 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
+
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:whatsapp_stickers/exceptions.dart';
+import 'package:whatsapp_stickers/whatsapp_stickers.dart';
+import 'package:wpstickermaker/core/functions.dart';
+
 import '../../core/storage_manager.dart';
 import '../../pages/image_editing_page/image_edit_page.dart';
 import '../../values/strings/strings.dart';
 
 class ImageEditProvider extends ChangeNotifier {
-
   final ImagePicker _picker = ImagePicker();
   String? imagePath;
   List<String> imageList = [];
@@ -24,11 +30,11 @@ class ImageEditProvider extends ChangeNotifier {
   dynamic val;
   dynamic mainImage;
 
+
   setVal(dynamic img) {
     val = img;
     notifyListeners();
   }
-
 
   Future<void> getImage() async {
     try {
@@ -37,13 +43,14 @@ class ImageEditProvider extends ChangeNotifier {
       final imageTemporary = File(image.path);
       imagePath = imageTemporary.path;
       val = await imageTemporary.readAsBytes();
-      Get.to(()=>ImageEditPage(imagePath: imagePath,image: imageTemporary,));
-
+      Get.to(() => ImageEditPage(
+            imagePath: imagePath,
+            image: imageTemporary,
+          ));
     } on PlatformException catch (e) {
-            print("catcheeeeeeee$e");
+      print("catcheeeeeeee$e");
     }
   }
-
 
   ///bu bizim temel imagemiz Uint8 olarak güncelliyoruz her seferinde
   String? croppedFilePath;
@@ -72,10 +79,10 @@ class ImageEditProvider extends ChangeNotifier {
     String tempPath = tempDir.path;
     var filePath =
         tempPath + '/file_01.png'; // file_01.tmp is dump file, can be anything
-    File file = await File(filePath)
-        .writeAsBytes(buffer.asUint8List(image.offsetInBytes, image.lengthInBytes));
+    File file = await File(filePath).writeAsBytes(
+        buffer.asUint8List(image.offsetInBytes, image.lengthInBytes));
 
-    try{
+    try {
       CroppedFile? croppedFile = await ImageCropper().cropImage(
         sourcePath: file.path,
         aspectRatioPresets: [
@@ -99,33 +106,107 @@ class ImageEditProvider extends ChangeNotifier {
       );
       croppedFilePath = croppedFile?.path;
       val = await croppedFile?.readAsBytes() as Uint8List;
-    }catch(e){
+    } catch (e) {
       print("eeeeeeeeeeee$e");
     }
     notifyListeners();
   }
+  var stickers = {
+    '01_Cuppy_smile.webp': ['☕', '🙂'],
+    '02_Cuppy_lol.webp': ['😄', '😀'],
+    '03_Cuppy_rofl.webp': ['😆', '😂'],
+    '04_Cuppy_sad.webp': ['😃', '😍'],
+    '05_Cuppy_cry.webp': ['😭', '💧'],
+    '06_Cuppy_love.webp': ['😍', '♥'],
+    '08_Cuppy_lovewithmug.webp': ['😍', '💑'],
+    '09_Cuppy_lovewithcookie.webp': ['😘', '🍪'],
+    '10_Cuppy_hmm.webp': ['🤔', '😐'],
+    '11_Cuppy_upset.webp': ['😱', '😵'],
+    '12_Cuppy_angry.webp': ['😡', '😠'],
+    '13_Cuppy_curious.webp': ['❓', '🤔'],
+    '14_Cuppy_weird.webp': ['🌈', '😜'],
+    '15_Cuppy_bluescreen.webp': ['💻', '😩'],
+    '16_Cuppy_angry.webp': ['😡', '😤'],
+    '17_Cuppy_tired.webp': ['😩', '😨'],
+    '18_Cuppy_workhard.webp': ['😔', '😨'],
+  };
+  var emojis = {
+    "0":['☕', '🙂'],
+     "1":['😄', '😀'],
+    "3":['😆', '😂'],
+    "4":['😃', '😍'],
+    "5":['😭', '💧'],
+    "6":['😍', '♥'],
+    "7":['😍', '💑'],
+    "8":['😘', '🍪'],
+  };
 
-  Future<void> saveImage(dynamic imageData)async {
+  Future<void> saveImage(dynamic imageData) async {
     print("SAVE Image");
 
-    final buffer = imageData.buffer;
-    Directory tempDir = await getTemporaryDirectory();
+    final result = await FlutterImageCompress.compressWithList(
+      imageData,
+      minHeight: 512,
+      minWidth: 512,
+      quality: 80,
+      rotate: 270,
+      format: CompressFormat.webp,
+    );
+
+    final buffer = result.buffer;
+    Directory tempDir = await getApplicationDocumentsDirectory();
     String tempPath = tempDir.path;
-    var filePath =
-        tempPath + '/${DateTime.now()}.png'; // file_01.tmp is dump file, can be anything
-    File file = await File(filePath)
-        .writeAsBytes(buffer.asUint8List(imageData.offsetInBytes, imageData.lengthInBytes));
+    var filePath = tempPath +
+        '/${DateTime.now().minute}${DateTime.now().microsecond}.webp'; // file_01.tmp is dump file, can be anything
+    File file = await File(filePath).writeAsBytes(
+        buffer.asUint8List(result.offsetInBytes, result.lengthInBytes));
     imageList.add(file.path);
     StorageManager.setStringList(Strings.imageKey, imageList);
     notifyListeners();
+    p("saved image", file.path);
+    p("saved image", file);
     GallerySaver.saveImage(file.path).then((value) {
       print(value.toString());
     });
   }
 
   Future<void> getImageList() async {
-    imageList = await StorageManager.getStringList()??[];
+    imageList = await StorageManager.getStringList() ?? [];
+    p("image list ", imageList.length);
+    imageList.forEach((element) {  p("image list ", element); });
+
+
     notifyListeners();
   }
 
+
+
+  Future addToWhatsapp() async {
+      p("addtoWhatsapp");
+    var stickerPack = WhatsappStickers(
+      identifier: 'qweqwe',
+      name: 'qweqwe',
+      publisher: 'azo',
+      trayImageFileName: WhatsappStickerImage.fromAsset('assets/stickers/tray_Cuppy.png'),
+      publisherWebsite: '',
+      privacyPolicyWebsite: '',
+      licenseAgreementWebsite: '',
+    );
+
+    if(imageList.isNotEmpty){
+      imageList.asMap().forEach((key,element) {
+        p("per element for add", element);
+        stickerPack.addSticker(WhatsappStickerImage.fromFile(element), emojis["$key"]??['😍', '♥']);
+      });
+
+    }
+      // stickerPack.addSticker(WhatsappStickerImage.fromAsset('assets/stickers/$sticker'), ['😩', '😨']);
+
+
+    try {
+      await stickerPack.sendToWhatsApp();
+    } on WhatsappStickersException catch (e) {
+      print(e.cause);
+    }
+  }
 }
