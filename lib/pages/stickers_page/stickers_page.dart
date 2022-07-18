@@ -14,17 +14,19 @@ class StickersPage extends StatefulWidget {
 }
 
 class _StickersPageState extends State<StickersPage> {
-  bool isSelected=false;
-
+  bool isSelected = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(title: "Stickers List"),
+      appBar: MyAppBar(
+          title: "Stickers List", buttonText: "Clear", onPressed: () {
+            context.read<ImageEditProvider>().clearAll();
+      }),
       body: Column(
         children: [
           AddToWhatsapp(
-            onTap: (){
+            onTap: () {
               context.read<ImageEditProvider>().addToWhatsapp();
             },
           ),
@@ -36,11 +38,10 @@ class _StickersPageState extends State<StickersPage> {
                   return SavedImageItem(
                     filePath: snapshot.imageList[index],
                     isSelected: isSelected,
-                    onTap: (){
+                    onTap: () {
                       setState(() {
                         isSelected = !isSelected;
                       });
-
                     },
                   );
                 }),

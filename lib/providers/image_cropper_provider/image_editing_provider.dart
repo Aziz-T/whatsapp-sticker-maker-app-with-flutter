@@ -28,8 +28,8 @@ class ImageEditProvider extends ChangeNotifier {
   final MethodChannel _channel =
       const MethodChannel('samples.flutter.dev/battery');
   dynamic val;
+  dynamic resizedImage;
   dynamic mainImage;
-
 
   setVal(dynamic img) {
     val = img;
@@ -73,6 +73,24 @@ class ImageEditProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> resizeImage(dynamic imgByte) async {
+    Map<dynamic, Uint8List> map = {"data": imgByte};
+    try {
+      await _channel.invokeMethod('resize', map).then((value) {
+        resizedImage = value;
+        resizedImage = Uint8List.fromList(resizedImage);
+        log(value.toString());
+        p("RESİZED", val);
+      });
+      // final Image image = Image.memory(val.buffer.asUint8List());
+      notifyListeners();
+      // return await _channel.invokeMethod('goIntent', map);
+    } on PlatformException catch (e) {
+      print("invoke method catch: $e");
+    }
+  }
+
+
   Future<void> imageCropSquare(String path, dynamic image) async {
     final buffer = image.buffer;
     Directory tempDir = await getTemporaryDirectory();
@@ -111,6 +129,7 @@ class ImageEditProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
   var stickers = {
     '01_Cuppy_smile.webp': ['☕', '🙂'],
     '02_Cuppy_lol.webp': ['😄', '😀'],
@@ -131,17 +150,45 @@ class ImageEditProvider extends ChangeNotifier {
     '18_Cuppy_workhard.webp': ['😔', '😨'],
   };
   var emojis = {
-    "0":['☕', '🙂'],
-     "1":['😄', '😀'],
-    "3":['😆', '😂'],
-    "4":['😃', '😍'],
-    "5":['😭', '💧'],
-    "6":['😍', '♥'],
-    "7":['😍', '💑'],
-    "8":['😘', '🍪'],
+    "0": ['☕', '🙂'],
+    "1": ['😄', '😀'],
+    "3": ['😆', '😂'],
+    "4": ['😃', '😍'],
+    "5": ['😭', '💧'],
+    "6": ['😍', '♥'],
+    "7": ['😍', '💑'],
+    "8": ['😘', '🍪'],
   };
 
+
   Future<void> saveImage(dynamic imageData) async {
+    await resizeImage(imageData);
+    var resized = resizedImage;
+    final result = await FlutterImageCompress.compressWithList(
+      resized,
+      minHeight: 512,
+      minWidth: 512,
+      quality: 80,
+      format: CompressFormat.webp,
+    );
+    final buffer = result.buffer;
+    Directory tempDir = await getApplicationDocumentsDirectory();
+    String tempPath = tempDir.path;
+    var filePath = tempPath +
+        '/${DateTime.now().minute}${DateTime.now().microsecond}.webp'; // file_01.tmp is dump file, can be anything
+    File file = await File(filePath).writeAsBytes(
+        buffer.asUint8List(result.offsetInBytes, result.lengthInBytes));
+    imageList.add(file.path);
+    StorageManager.setStringList(Strings.imageKey, imageList);
+    notifyListeners();
+    p("saved image", file.path);
+    p("saved image", file);
+    GallerySaver.saveImage(file.path).then((value) {
+      print(value.toString());
+    });
+  }
+
+  Future<void> saveImage1(dynamic imageData) async {
     print("SAVE Image");
 
     final result = await FlutterImageCompress.compressWithList(
@@ -149,7 +196,6 @@ class ImageEditProvider extends ChangeNotifier {
       minHeight: 512,
       minWidth: 512,
       quality: 80,
-      rotate: 270,
       format: CompressFormat.webp,
     );
 
@@ -173,35 +219,40 @@ class ImageEditProvider extends ChangeNotifier {
   Future<void> getImageList() async {
     imageList = await StorageManager.getStringList() ?? [];
     p("image list ", imageList.length);
-    imageList.forEach((element) {  p("image list ", element); });
-
+    imageList.forEach((element) {
+      p("image list ", element);
+    });
 
     notifyListeners();
   }
 
-
+  Future<void> clearAll()async {
+    StorageManager.clearAll();
+    imageList.clear();
+    notifyListeners();
+  }
 
   Future addToWhatsapp() async {
-      p("addtoWhatsapp");
+    p("addtoWhatsapp");
     var stickerPack = WhatsappStickers(
-      identifier: 'qweqwe',
-      name: 'qweqwe',
+      identifier: 'wpstickermaker',
+      name: 'deneme',
       publisher: 'azo',
-      trayImageFileName: WhatsappStickerImage.fromAsset('assets/stickers/tray_Cuppy.png'),
+      trayImageFileName:
+          WhatsappStickerImage.fromAsset('assets/stickers/tray_Cuppy.png'),
       publisherWebsite: '',
       privacyPolicyWebsite: '',
       licenseAgreementWebsite: '',
     );
 
-    if(imageList.isNotEmpty){
-      imageList.asMap().forEach((key,element) {
+    if (imageList.isNotEmpty) {
+      imageList.asMap().forEach((key, element) {
         p("per element for add", element);
-        stickerPack.addSticker(WhatsappStickerImage.fromFile(element), emojis["$key"]??['😍', '♥']);
+        stickerPack.addSticker(WhatsappStickerImage.fromFile(element),
+            emojis["$key"] ?? ['😍', '♥']);
       });
-
     }
-      // stickerPack.addSticker(WhatsappStickerImage.fromAsset('assets/stickers/$sticker'), ['😩', '😨']);
-
+    // stickerPack.addSticker(WhatsappStickerImage.fromAsset('assets/stickers/$sticker'), ['😩', '😨']);
 
     try {
       await stickerPack.sendToWhatsApp();

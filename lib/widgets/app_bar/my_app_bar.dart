@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
+  final String? buttonText;
   final Function()? onPressed;
   final double? fontSize;
-  const MyAppBar({Key? key, this.title, this.onPressed, this.fontSize}) : super(key: key);
+  const MyAppBar({Key? key, this.title, this.onPressed, this.fontSize, this.buttonText}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           : [
               TextButton(
                 onPressed: onPressed,
-                child: Text("Save",
+                child: Text( buttonText??"Save",
                     style: TextStyle(fontFamily: 'McLaren', fontSize: 18, color: Colors.black)),
               )
             ],
