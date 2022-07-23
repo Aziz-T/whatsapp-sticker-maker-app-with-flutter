@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wpstickermaker/widgets/add_to_whatsapp_button/add_to_whatsapp_button.dart';
 
-import '../../providers/image_cropper_provider/image_editing_provider.dart';
+import '../../providers/image_editing_provider/image_editing_provider.dart';
 import '../../widgets/app_bar/my_app_bar.dart';
 import '../../widgets/saved_image_item/saved_image_item.dart';
 

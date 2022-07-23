@@ -6,7 +6,7 @@ import 'package:wpstickermaker/pages/image_paint_page/image_paint_page.dart';
 import 'package:wpstickermaker/widgets/app_bar/my_app_bar.dart';
 import 'package:wpstickermaker/widgets/edit_page_toolmenu/edit_tool_menu.dart';
 import 'package:wpstickermaker/widgets/edit_page_toolmenu/tool_menu_item.dart';
-import '../../providers/image_cropper_provider/image_editing_provider.dart';
+import '../../providers/image_editing_provider/image_editing_provider.dart';
 
 class ImageEditPage extends StatefulWidget {
   ///image path

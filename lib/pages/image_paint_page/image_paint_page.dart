@@ -6,7 +6,7 @@ import 'package:image_painter/image_painter.dart';
 import 'package:provider/provider.dart';
 import 'package:wpstickermaker/widgets/app_bar/my_app_bar.dart';
 
-import '../../providers/image_cropper_provider/image_editing_provider.dart';
+import '../../providers/image_editing_provider/image_editing_provider.dart';
 
 class PaintImagePage extends StatefulWidget {
   final image;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wpstickermaker/core/storage_manager.dart';
 import 'package:wpstickermaker/providers/home_page_provider/home_page_provider.dart';
-import 'package:wpstickermaker/providers/image_cropper_provider/image_editing_provider.dart';
+import 'package:wpstickermaker/providers/image_editing_provider/image_editing_provider.dart';
 import 'package:wpstickermaker/providers/main_page_provider/main_page_provider.dart';
 
 import 'app.dart';

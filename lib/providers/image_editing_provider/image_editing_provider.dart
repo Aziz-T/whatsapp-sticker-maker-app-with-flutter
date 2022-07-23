@@ -188,33 +188,6 @@ class ImageEditProvider extends ChangeNotifier {
     });
   }
 
-  Future<void> saveImage1(dynamic imageData) async {
-    print("SAVE Image");
-
-    final result = await FlutterImageCompress.compressWithList(
-      imageData,
-      minHeight: 512,
-      minWidth: 512,
-      quality: 80,
-      format: CompressFormat.webp,
-    );
-
-    final buffer = result.buffer;
-    Directory tempDir = await getApplicationDocumentsDirectory();
-    String tempPath = tempDir.path;
-    var filePath = tempPath +
-        '/${DateTime.now().minute}${DateTime.now().microsecond}.webp'; // file_01.tmp is dump file, can be anything
-    File file = await File(filePath).writeAsBytes(
-        buffer.asUint8List(result.offsetInBytes, result.lengthInBytes));
-    imageList.add(file.path);
-    StorageManager.setStringList(Strings.imageKey, imageList);
-    notifyListeners();
-    p("saved image", file.path);
-    p("saved image", file);
-    GallerySaver.saveImage(file.path).then((value) {
-      print(value.toString());
-    });
-  }
 
   Future<void> getImageList() async {
     imageList = await StorageManager.getStringList() ?? [];

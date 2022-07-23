@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:whatsapp_stickers/exceptions.dart';
 import 'package:whatsapp_stickers/whatsapp_stickers.dart';
-import 'package:wpstickermaker/providers/image_cropper_provider/image_editing_provider.dart';
+import 'package:wpstickermaker/providers/image_editing_provider/image_editing_provider.dart';
 
 
 class AppRoot extends StatelessWidget {
