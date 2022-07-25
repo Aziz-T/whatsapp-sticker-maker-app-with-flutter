@@ -72,7 +72,7 @@ Future installFromAssets(BuildContext context) async {
     identifier: 'cuppyFlutterWhatsAppStickers',
     name: 'Cuppy WhatsApp Stickers',
     publisher: 'John Doe',
-    trayImageFileName: WhatsappStickerImage.fromAsset('assets/stickers/tray_Cuppy.png'),
+    trayImageFileName: WhatsappStickerImage.fromAsset('assets/stickers/tray_Cuppy1.png'),
     publisherWebsite: '',
     privacyPolicyWebsite: '',
     licenseAgreementWebsite: '',

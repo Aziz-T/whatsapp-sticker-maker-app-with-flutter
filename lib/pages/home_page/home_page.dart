@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
                     itemCount: snapshot.imageList.length,
                     itemBuilder: (context, index){
                   return SavedImageItem(
-                      filePath: snapshot.imageList[index],
+                      filePath: snapshot.imageList[index].imagePath,
                   );
                 });
               }
