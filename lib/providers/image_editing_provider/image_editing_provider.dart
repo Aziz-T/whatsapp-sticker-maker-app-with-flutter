@@ -28,8 +28,9 @@ class ImageEditProvider extends ChangeNotifier {
   ImageModel imageModel = ImageModel();
   List<ImageData> imageList = [];
   List<ImageData> selectedImageList = [];
-  final LocalStorage storage =  LocalStorage('sticker_app');
-  WhatsappStickers? stickerPack;
+  final LocalStorage storage = LocalStorage('sticker_app');
+
+
 
   final MethodChannel _channel =
       const MethodChannel('samples.flutter.dev/battery');
@@ -95,7 +96,6 @@ class ImageEditProvider extends ChangeNotifier {
       print("invoke method catch: $e");
     }
   }
-
 
   Future<void> imageCropSquare(String path, dynamic image) async {
     final buffer = image.buffer;
@@ -166,7 +166,6 @@ class ImageEditProvider extends ChangeNotifier {
     "8": ['😘', '🍪'],
   };
 
-
   Future<void> saveImage(dynamic imageData) async {
     await resizeImage(imageData);
     var resized = resizedImage;
@@ -195,55 +194,58 @@ class ImageEditProvider extends ChangeNotifier {
     });
   }
 
-
-  Future<void> setSelected(int index,bool val)async{
+  Future<void> setSelected(int index, bool val) async {
     imageList[index].isSelected = val;
-    p("selected Image",imageList[index].imagePath);
+    p("selected Image", imageList[index].imagePath);
     selectedImageList.add(imageList[index]);
-    p("selected Image list size ",selectedImageList.length);
+    p("selected Image list size ", selectedImageList.length);
     notifyListeners();
   }
-
 
   Future<void> getImageList() async {
     await storage.ready;
     var items = await storage.getItem('images');
-    if(items!=null){
+    if (items != null) {
       imageModel = ImageModel.fromJson(items);
-      imageList = imageModel.data??[];
+      imageList = imageModel.data ?? [];
     }
 
-    p("GET ITEMSSS" , items.toString());
+    p("GET ITEMSSS", items.toString());
 
     notifyListeners();
   }
 
-  Future<void> clearAll()async {
+  Future<void> clearAll() async {
     await storage.ready;
     await storage.clear();
     imageList.clear();
     notifyListeners();
   }
 
-  Future addToWhatsapp({required String packageName,required String publisherName }) async {
+  Future<void> addToWhatsapp(
+      {required String packageName, required String publisherName}) async {
+
     if (selectedImageList.isNotEmpty) {
-      stickerPack = WhatsappStickers(
-        identifier: 'azo_stickers',
+      var stickerPack = WhatsappStickers(
+        identifier: packageName.hashCode.toString(),
         name: packageName,
         publisher: publisherName,
-        trayImageFileName: WhatsappStickerImage.fromAsset('assets/stickers/ww.png'),
+        trayImageFileName:
+            WhatsappStickerImage.fromAsset('assets/stickers/tray_Cuppy1.png'),
       );
-
 
       selectedImageList.asMap().forEach((key, element) {
         p("per element for add", element);
-        stickerPack!.addSticker(WhatsappStickerImage.fromFile(element.imagePath??""),
+        stickerPack.addSticker(
+            WhatsappStickerImage.fromFile(element.imagePath ?? ""),
             emojis["$key"] ?? ['😍', '♥']);
       });
       try {
-        await stickerPack!.sendToWhatsApp();
+        p("STICKER PACK", stickerPack.trayImageFileName.path.toString());
+        p("STICKER PACK", stickerPack.identifier.toString());
+        await stickerPack.sendToWhatsApp();
       } on WhatsappStickersException catch (e) {
-        p("EEEEEEEE",e.cause);
+        p("EEEEEEEE", e.cause);
       }
     }
   }
