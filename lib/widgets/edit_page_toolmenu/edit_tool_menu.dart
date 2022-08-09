@@ -9,7 +9,7 @@ class EditToolMenu extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     return Container(
       height: children != null ? null : 56,
-      width: children != null ? null : size.width,
+      width: size.width,
       margin: EdgeInsets.all(20),
       padding: EdgeInsets.all(5),
       decoration: BoxDecoration(
@@ -23,12 +23,9 @@ class EditToolMenu extends StatelessWidget {
           offset: Offset(0, 3), // changes position of shadow
         ),
       ]),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: children ?? [],
-        ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: children ?? [],
       ),
     );
   }

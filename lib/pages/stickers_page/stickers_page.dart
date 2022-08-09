@@ -27,12 +27,12 @@ class _StickersPageState extends State<StickersPage> {
       }),
       body: Column(
         children: [
-          AddToWhatsapp(
-            onTap: () {
-              Get.to(()=>const AddToWhatsappPage());
-              // context.read<ImageEditProvider>().addToWhatsapp();
-            },
-          ),
+          // AddToWhatsapp(
+          //   onTap: () {
+          //     Get.to(()=>const AddToWhatsappPage());
+          //     // context.read<ImageEditProvider>().addToWhatsapp();
+          //   },
+          // ),
           Expanded(
             child: Consumer<ImageEditProvider>(builder: (context, snapshot, _) {
               return GridView.count(
@@ -51,6 +51,11 @@ class _StickersPageState extends State<StickersPage> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {Get.to(()=>const AddToWhatsappPage());},
+          label: Text("Add Sticker to Wp", style: TextStyle(fontFamily: 'McLaren')),
+          icon: Icon(Icons.add),
+          backgroundColor: Colors.green),
     );
   }
 }

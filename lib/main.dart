@@ -15,5 +15,6 @@ Future<void> main() async {
     ChangeNotifierProvider(create: (context) => MainPageProvider()),
     ChangeNotifierProvider(create: (context) => HomePageProvider()),
     ChangeNotifierProvider(create: (context) => ImageEditProvider()),
-  ], child: App()));
+  ], child: const App()));
 }
+///  /data/user/0/com.aven.wpstickermaker/app_flutter/sticker_packs.json

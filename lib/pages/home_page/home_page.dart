@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:wpstickermaker/providers/image_editing_provider/image_editing_provider.dart';
 import 'package:wpstickermaker/widgets/app_bar/my_app_bar.dart';
 import 'package:wpstickermaker/widgets/create_stickers_button/create_stickers_button.dart';
 
 import '../../widgets/saved_image_item/saved_image_item.dart';
+import '../add_to_whatsapp_page/add_to_whatsapp_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -14,7 +16,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   void initState() {
     // TODO: implement initState
@@ -23,14 +24,18 @@ class _HomePageState extends State<HomePage> {
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       context.read<ImageEditProvider>().getImageList();
     });
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:  const MyAppBar(title: "Home Page",fontSize: 20),
+      appBar: const MyAppBar(title: "Home Page", fontSize: 20),
       body: homePageBody(context),
+      floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {Get.to(()=>const AddToWhatsappPage());},
+          label: Text("Add Sticker to Wp", style: TextStyle(fontFamily: 'McLaren')),
+          icon: Icon(Icons.add),
+          backgroundColor: Colors.green),
     );
   }
 
@@ -53,29 +58,27 @@ class _HomePageState extends State<HomePage> {
           ),
           buildText(),
           Spacer(),
-          Row(
-            children: [
-              SizedBox(
-                width: 12,
-              ),
-              buildHistoryText(),
-            ],
-          ),
-          Expanded(
-            child: Consumer<ImageEditProvider>(
-              builder: (context, snapshot, _) {
-                return ListView.builder(
-                    reverse: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: snapshot.imageList.length,
-                    itemBuilder: (context, index){
-                  return SavedImageItem(
-                      filePath: snapshot.imageList[index].imagePath,
-                  );
-                });
-              }
-            ),
-          ),
+          // Row(
+          //   children: [
+          //     SizedBox(
+          //       width: 12,
+          //     ),
+          //     buildHistoryText(),
+          //   ],
+          // ),
+          // Expanded(
+          //   child: Consumer<ImageEditProvider>(builder: (context, snapshot, _) {
+          //     return ListView.builder(
+          //         reverse: true,
+          //         scrollDirection: Axis.horizontal,
+          //         itemCount: snapshot.imageList.length,
+          //         itemBuilder: (context, index) {
+          //           return SavedImageItem(
+          //             filePath: snapshot.imageList[index].imagePath,
+          //           );
+          //         });
+          //   }),
+          // ),
           SizedBox(
             height: 12,
           ),

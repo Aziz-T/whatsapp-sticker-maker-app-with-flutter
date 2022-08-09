@@ -15,6 +15,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -58,7 +59,7 @@ public class SomeView extends View implements View.OnTouchListener {
         paint.setPathEffect(new DashPathEffect(new float[] { 10, 20 }, 0));
         paint.setStrokeWidth(5);
         paint.setColor(Color.WHITE);
-
+        this.setLayoutParams(new LinearLayout.LayoutParams(width, width));
         this.setOnTouchListener(this);
         points = new ArrayList<Point>();
 
@@ -228,6 +229,7 @@ public class SomeView extends View implements View.OnTouchListener {
         compositeImageView.setMinimumHeight(400);
         compositeImageView.setImageBitmap(resultingImage);
         line.removeAllViews();
+        line.setGravity(Gravity.CENTER);
         line.addView(compositeImageView);
         croppedImageByteList = byteArray;
 

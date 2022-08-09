@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 class ToolMenuItem extends StatelessWidget {
   final VoidCallback? onTap;
   final IconData? iconData;
-  const ToolMenuItem({Key? key, this.onTap, this.iconData}) : super(key: key);
+  final String? title;
+  const ToolMenuItem({Key? key, this.onTap, this.iconData, this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +22,14 @@ class ToolMenuItem extends StatelessWidget {
         //     offset: Offset(0, 3), // changes position of shadow
         //   ),
         // ]),
-        child: Icon(
-          iconData ?? Icons.add_a_photo,
-          color: Colors.lightBlue,
+        child: Column(
+          children: [
+            Icon(
+              iconData ?? Icons.add_a_photo,
+              color: Colors.lightBlue,
+            ),
+            FittedBox(child: Text("$title", style: TextStyle(fontFamily: 'McLaren',fontSize: 12,),))
+          ],
         ),
       ),
     );

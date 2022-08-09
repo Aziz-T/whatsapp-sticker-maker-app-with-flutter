@@ -34,7 +34,7 @@ class _ImageEditPageState extends State<ImageEditPage> {
                 Get.back();
                 // provider.installFromAssets();
               }),
-          body: Container(
+          body: SizedBox(
             width: size.width,
             child: Column(children: [
               SizedBox(
@@ -48,6 +48,7 @@ class _ImageEditPageState extends State<ImageEditPage> {
                 children: [
                   ToolMenuItem(
                     iconData: Icons.image_aspect_ratio,
+                    title: "Free Cut",
                     onTap: () {
                       if (widget.imagePath != null) {
                         provider.cutImage(widget.imagePath!, provider.val);
@@ -56,13 +57,15 @@ class _ImageEditPageState extends State<ImageEditPage> {
                   ),
                   ToolMenuItem(
                     iconData: Icons.cut,
+                    title: "Cut",
                     onTap: () async {
                       await provider.imageCropSquare(
-                          widget.imagePath!, provider.val);
+                          widget.imagePath!, provider.val, isEdit: true);
                     },
                   ),
                   ToolMenuItem(
                     iconData: Icons.color_lens_outlined,
+                    title: "Paint",
                     onTap: () async {
                       Get.to(() => PaintImagePage(
                             image: provider.val,

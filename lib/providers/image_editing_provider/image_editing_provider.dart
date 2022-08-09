@@ -30,8 +30,6 @@ class ImageEditProvider extends ChangeNotifier {
   List<ImageData> selectedImageList = [];
   final LocalStorage storage = LocalStorage('sticker_app');
 
-
-
   final MethodChannel _channel =
       const MethodChannel('samples.flutter.dev/battery');
   dynamic val;
@@ -50,10 +48,16 @@ class ImageEditProvider extends ChangeNotifier {
       final imageTemporary = File(image.path);
       imagePath = imageTemporary.path;
       val = await imageTemporary.readAsBytes();
-      Get.to(() => ImageEditPage(
-            imagePath: imagePath,
-            image: imageTemporary,
-          ));
+      if(imagePath != null) {
+        imageCropSquare(imagePath!, val, file: imageTemporary);
+      }
+
+
+
+      // Get.to(() => ImageEditPage(
+      //       imagePath: imagePath,
+      //       image: imageTemporary,
+      //     ));
     } on PlatformException catch (e) {
       print("catcheeeeeeee$e");
     }
@@ -97,7 +101,7 @@ class ImageEditProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> imageCropSquare(String path, dynamic image) async {
+  Future<void> imageCropSquare(String path, dynamic image,{File? file,bool isEdit = false}) async {
     final buffer = image.buffer;
     Directory tempDir = await getTemporaryDirectory();
     String tempPath = tempDir.path;
@@ -111,15 +115,11 @@ class ImageEditProvider extends ChangeNotifier {
         sourcePath: file.path,
         aspectRatioPresets: [
           CropAspectRatioPreset.square,
-          CropAspectRatioPreset.ratio3x2,
-          CropAspectRatioPreset.original,
-          CropAspectRatioPreset.ratio4x3,
-          CropAspectRatioPreset.ratio16x9
         ],
         uiSettings: [
           AndroidUiSettings(
               toolbarTitle: 'Cropper',
-              toolbarColor: Colors.deepOrange,
+              toolbarColor: Colors.green,
               toolbarWidgetColor: Colors.white,
               initAspectRatio: CropAspectRatioPreset.original,
               lockAspectRatio: false),
@@ -130,6 +130,15 @@ class ImageEditProvider extends ChangeNotifier {
       );
       croppedFilePath = croppedFile?.path;
       val = await croppedFile?.readAsBytes() as Uint8List;
+      if(croppedFile!=null&& isEdit == false){
+        Get.to(() => ImageEditPage(
+          imagePath: croppedFilePath,
+          image: file,
+        ));
+      }
+
+
+
     } catch (e) {
       print("eeeeeeeeeeee$e");
     }
@@ -224,10 +233,9 @@ class ImageEditProvider extends ChangeNotifier {
 
   Future<void> addToWhatsapp(
       {required String packageName, required String publisherName}) async {
-
     if (selectedImageList.isNotEmpty) {
       var stickerPack = WhatsappStickers(
-        identifier: packageName.hashCode.toString(),
+        identifier: packageName,
         name: packageName,
         publisher: publisherName,
         trayImageFileName:
