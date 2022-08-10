@@ -12,7 +12,7 @@ class FlutterSimpleStickerView extends StatefulWidget {
     this.stickerList, {
     Key? key,
     this.stickerSize = 100.0,
-    this.stickerMaxScale = 2.0,
+    this.stickerMaxScale = 3.0,
     this.stickerMinScale = 0.5,
     this.panelHeight = 200.0,
     this.panelBackgroundColor = Colors.black,
@@ -131,10 +131,10 @@ class _FlutterSimpleStickerViewState extends State<FlutterSimpleStickerView> {
                           ));
                     },
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: this.widget.panelStickercrossAxisCount,
-                        childAspectRatio: this.widget.panelStickerAspectRatio),
+                        crossAxisCount: widget.panelStickercrossAxisCount,
+                        childAspectRatio: widget.panelStickerAspectRatio),
                   ),
-                  height: this.widget.panelHeight);
+                  height: widget.panelHeight);
             },
           ),
         ),

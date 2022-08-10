@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
             if (context.read<ImageEditProvider>().imageList.length < 4) {
-              showSnackBar("You must create at least 3 stickers!");
+              showSnackBar("You must create at least 4 stickers!");
             } else {
               Get.to(() => const AddToWhatsappPage());
             }

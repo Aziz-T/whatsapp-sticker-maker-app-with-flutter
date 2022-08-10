@@ -174,7 +174,6 @@ class ImageEditProvider extends ChangeNotifier {
     '29': ['😔', '😨'],
   };
 
-
   Future<void> saveImage(dynamic imageData) async {
     await resizeImage(imageData);
     var resized = resizedImage;
@@ -204,10 +203,17 @@ class ImageEditProvider extends ChangeNotifier {
   }
 
   Future<void> setSelected(int index, bool val) async {
-    imageList[index].isSelected = val;
-    p("selected Image", imageList[index].imagePath);
-    selectedImageList.add(imageList[index]);
-    p("selected Image list size ", selectedImageList.length);
+    if(selectedImageList.length<30){
+      imageList[index].isSelected = val;
+      if (val) {
+        selectedImageList.add(imageList[index]);
+      } else {
+        selectedImageList.remove(selectedImageList.firstWhere(
+                (element) => element.imagePath == imageList[index].imagePath));
+      }
+    }
+
+    p("Selected image list length", selectedImageList.length);
     notifyListeners();
   }
 
@@ -252,8 +258,11 @@ class ImageEditProvider extends ChangeNotifier {
         p("STICKER PACK", stickerPack.trayImageFileName.path.toString());
         p("STICKER PACK", stickerPack.identifier.toString());
         await stickerPack.sendToWhatsApp();
+        Get.back();
       } on WhatsappStickersException catch (e) {
         p("EEEEEEEE", e.cause);
+        showSnackBar("Some error! Sorry!");
+        Get.back();
       }
     }
   }
