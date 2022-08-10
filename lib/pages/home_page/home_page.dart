@@ -5,6 +5,7 @@ import 'package:wpstickermaker/providers/image_editing_provider/image_editing_pr
 import 'package:wpstickermaker/widgets/app_bar/my_app_bar.dart';
 import 'package:wpstickermaker/widgets/create_stickers_button/create_stickers_button.dart';
 
+import '../../core/functions.dart';
 import '../../widgets/saved_image_item/saved_image_item.dart';
 import '../add_to_whatsapp_page/add_to_whatsapp_page.dart';
 
@@ -32,8 +33,17 @@ class _HomePageState extends State<HomePage> {
       appBar: const MyAppBar(title: "Home Page", fontSize: 20),
       body: homePageBody(context),
       floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {Get.to(()=>const AddToWhatsappPage());},
-          label: Text("Add Sticker to Wp", style: TextStyle(fontFamily: 'McLaren')),
+          onPressed: () {
+            if (context.read<ImageEditProvider>().imageList.length < 4) {
+              showSnackBar("You must create at least 3 stickers!");
+            } else {
+              Get.to(() => const AddToWhatsappPage());
+            }
+          },
+          label: Text("Add Sticker to Wp",
+              style: TextStyle(
+                fontFamily: 'McLaren',
+              )),
           icon: Icon(Icons.add),
           backgroundColor: Colors.green),
     );

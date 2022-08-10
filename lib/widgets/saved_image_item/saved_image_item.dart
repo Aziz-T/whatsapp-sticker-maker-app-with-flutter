@@ -45,7 +45,7 @@ class _SavedImageItemState extends State<SavedImageItem> {
           ]
         ),
         margin: EdgeInsets.all(10),
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.symmetric(vertical: 5),
         child: file!=null ? Image.file(file!):const SizedBox(),
       ),
     );

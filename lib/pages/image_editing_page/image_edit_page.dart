@@ -3,10 +3,12 @@ import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:wpstickermaker/deneme.dart';
 import 'package:wpstickermaker/pages/image_paint_page/image_paint_page.dart';
+import 'package:wpstickermaker/providers/main_page_provider/main_page_provider.dart';
 import 'package:wpstickermaker/widgets/app_bar/my_app_bar.dart';
 import 'package:wpstickermaker/widgets/edit_page_toolmenu/edit_tool_menu.dart';
 import 'package:wpstickermaker/widgets/edit_page_toolmenu/tool_menu_item.dart';
 import '../../providers/image_editing_provider/image_editing_provider.dart';
+import '../image_sticker_page/image_sticker_page.dart';
 
 class ImageEditPage extends StatefulWidget {
   ///image path
@@ -32,6 +34,9 @@ class _ImageEditPageState extends State<ImageEditPage> {
               onPressed: () {
                 provider.saveImage(provider.val);
                 Get.back();
+                if(provider.imageList.length <=1) {
+                  context.read<MainPageProvider>().setCurrentPage = 1;
+                }
                 // provider.installFromAssets();
               }),
           body: SizedBox(
@@ -69,6 +74,15 @@ class _ImageEditPageState extends State<ImageEditPage> {
                     onTap: () async {
                       Get.to(() => PaintImagePage(
                             image: provider.val,
+                          ));
+                    },
+                  ),
+                  ToolMenuItem(
+                    iconData: Icons.insert_emoticon,
+                    title: "Add Sticker",
+                    onTap: () async {
+                      Get.to(() => ImageStickerPage(
+                            val: provider.val,
                           ));
                     },
                   ),

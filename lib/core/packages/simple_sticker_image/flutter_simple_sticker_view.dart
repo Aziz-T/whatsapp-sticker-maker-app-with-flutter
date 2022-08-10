@@ -82,23 +82,27 @@ class _FlutterSimpleStickerViewState extends State<FlutterSimpleStickerView> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Column(
       children: <Widget>[
         Expanded(
           child: RepaintBoundary(
             key: key,
-            child: Stack(
-              fit: StackFit.expand,
-              children: <Widget>[
-                LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    viewport = viewport ??
-                        Size(constraints.maxWidth, constraints.maxHeight);
-                    return widget.source;
-                  },
-                ),
-                Stack(children: attachedList, fit: StackFit.expand)
-              ],
+            child: SizedBox(
+              height: size.width,
+              width: size.width,
+              child: Stack(
+                children: <Widget>[
+                  LayoutBuilder(
+                    builder: (BuildContext context, BoxConstraints constraints) {
+                      viewport = viewport ??
+                          Size(constraints.maxWidth, constraints.maxHeight);
+                      return widget.source;
+                    },
+                  ),
+                  Stack(children: attachedList)
+                ],
+              ),
             ),
           ),
         ),
@@ -119,7 +123,7 @@ class _FlutterSimpleStickerViewState extends State<FlutterSimpleStickerView> {
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
                             color: widget.panelStickerBackgroundColor,
-                            child: ElevatedButton(
+                            child: TextButton(
                                 onPressed: () {
                                   attachSticker(widget.stickerList[i]);
                                 },

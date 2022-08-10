@@ -204,7 +204,7 @@ public class SomeView extends View implements View.OnTouchListener {
 
 
         Bitmap resultingImage = Bitmap.createBitmap(width,
-                height, bitmap.getConfig());
+                width, bitmap.getConfig());
 
         Canvas canvas = new Canvas(resultingImage);
         Paint paint = new Paint();

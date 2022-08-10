@@ -48,11 +48,9 @@ class ImageEditProvider extends ChangeNotifier {
       final imageTemporary = File(image.path);
       imagePath = imageTemporary.path;
       val = await imageTemporary.readAsBytes();
-      if(imagePath != null) {
+      if (imagePath != null) {
         imageCropSquare(imagePath!, val, file: imageTemporary);
       }
-
-
 
       // Get.to(() => ImageEditPage(
       //       imagePath: imagePath,
@@ -101,7 +99,8 @@ class ImageEditProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> imageCropSquare(String path, dynamic image,{File? file,bool isEdit = false}) async {
+  Future<void> imageCropSquare(String path, dynamic image,
+      {File? file, bool isEdit = false}) async {
     final buffer = image.buffer;
     Directory tempDir = await getTemporaryDirectory();
     String tempPath = tempDir.path;
@@ -130,50 +129,51 @@ class ImageEditProvider extends ChangeNotifier {
       );
       croppedFilePath = croppedFile?.path;
       val = await croppedFile?.readAsBytes() as Uint8List;
-      if(croppedFile!=null&& isEdit == false){
+      if (croppedFile != null && isEdit == false) {
         Get.to(() => ImageEditPage(
-          imagePath: croppedFilePath,
-          image: file,
-        ));
+              imagePath: croppedFilePath,
+              image: file,
+            ));
       }
-
-
-
     } catch (e) {
       print("eeeeeeeeeeee$e");
     }
     notifyListeners();
   }
 
-  var stickers = {
-    '01_Cuppy_smile.webp': ['☕', '🙂'],
-    '02_Cuppy_lol.webp': ['😄', '😀'],
-    '03_Cuppy_rofl.webp': ['😆', '😂'],
-    '04_Cuppy_sad.webp': ['😃', '😍'],
-    '05_Cuppy_cry.webp': ['😭', '💧'],
-    '06_Cuppy_love.webp': ['😍', '♥'],
-    '08_Cuppy_lovewithmug.webp': ['😍', '💑'],
-    '09_Cuppy_lovewithcookie.webp': ['😘', '🍪'],
-    '10_Cuppy_hmm.webp': ['🤔', '😐'],
-    '11_Cuppy_upset.webp': ['😱', '😵'],
-    '12_Cuppy_angry.webp': ['😡', '😠'],
-    '13_Cuppy_curious.webp': ['❓', '🤔'],
-    '14_Cuppy_weird.webp': ['🌈', '😜'],
-    '15_Cuppy_bluescreen.webp': ['💻', '😩'],
-    '16_Cuppy_angry.webp': ['😡', '😤'],
-    '17_Cuppy_tired.webp': ['😩', '😨'],
-    '18_Cuppy_workhard.webp': ['😔', '😨'],
-  };
   var emojis = {
-    "0": ['😔', '😨'],
-    "1": ['❓', '🤔'],
-    "3": ['🤔', '😐'],
-    "4": ['😍', '💑'],
-    "5": ['😆', '😂'],
-    "6": ['😍', '♥'],
-    "7": ['😍', '💑'],
-    "8": ['😘', '🍪'],
+    '0': ['☕', '🙂'],
+    '1': ['😄', '😀'],
+    '2': ['😆', '😂'],
+    '3': ['😃', '😍'],
+    '4': ['😭', '💧'],
+    '5': ['😍', '♥'],
+    '6': ['😍', '💑'],
+    '7': ['😘', '🍪'],
+    '8': ['🤔', '😐'],
+    '9': ['😱', '😵'],
+    '10': ['😡', '😠'],
+    '11': ['❓', '🤔'],
+    '12': ['🌈', '😜'],
+    '13': ['💻', '😩'],
+    '14': ['😘', '😤'],
+    '15': ['😩', '😨'],
+    '16': ['☕', '😨'],
+    '17': ['😍', '😨'],
+    '18': ['💧', '😨'],
+    '19': ['♥', '😨'],
+    '20': ['💑', '😨'],
+    '21': ['🍪', '😨'],
+    '22': ['😐', '😨'],
+    '23': ['😔', '😠'],
+    '24': ['😱', '😨'],
+    '25': ['😔', '😨'],
+    '26': ['😱', '😨'],
+    '27': ['😔', '😨'],
+    '28': ['😱', '😨'],
+    '29': ['😔', '😨'],
   };
+
 
   Future<void> saveImage(dynamic imageData) async {
     await resizeImage(imageData);

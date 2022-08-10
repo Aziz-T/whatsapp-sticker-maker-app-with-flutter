@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:wpstickermaker/core/functions.dart';
 import 'package:wpstickermaker/widgets/add_to_whatsapp_button/add_to_whatsapp_button.dart';
 
 import '../../providers/image_editing_provider/image_editing_provider.dart';
@@ -22,9 +23,11 @@ class _StickersPageState extends State<StickersPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(
-          title: "Stickers List", buttonText: "Clear", onPressed: () {
-            context.read<ImageEditProvider>().clearAll();
-      }),
+          title: "Stickers List",
+          buttonText: "Clear All",
+          onPressed: () {
+            _showMyDialog();
+          }),
       body: Column(
         children: [
           // AddToWhatsapp(
@@ -41,9 +44,7 @@ class _StickersPageState extends State<StickersPage> {
                   return SavedImageItem(
                     filePath: snapshot.imageList[index].imagePath,
                     isSelected: isSelected,
-                    onTap: () {
-
-                    },
+                    onTap: () {},
                   );
                 }),
               );
@@ -52,10 +53,54 @@ class _StickersPageState extends State<StickersPage> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {Get.to(()=>const AddToWhatsappPage());},
-          label: Text("Add Sticker to Wp", style: TextStyle(fontFamily: 'McLaren')),
+          onPressed: () {
+            if(context.read<ImageEditProvider>().imageList.length<4) {
+              showSnackBar("You must create at least 3 stickers!");
+            }else {
+              Get.to(() => const AddToWhatsappPage());
+            }
+          },
+          label: Text("Add Sticker to Wp",
+              style: TextStyle(fontFamily: 'McLaren')),
           icon: Icon(Icons.add),
           backgroundColor: Colors.green),
+    );
+  }
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title:
+              const Text('Clear All', style: TextStyle(fontFamily: 'McLaren')),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                // Text('Clear All', style: TextStyle(fontFamily: 'McLaren')),
+                Text('Do you want to clear all Stickers?',
+                    style: TextStyle(fontFamily: 'McLaren')),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Clear'),
+              onPressed: () {
+                context.read<ImageEditProvider>().clearAll();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
