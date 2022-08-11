@@ -64,10 +64,21 @@ class ImageEditProvider extends ChangeNotifier {
   ///bu bizim temel imagemiz Uint8 olarak güncelliyoruz her seferinde
   String? croppedFilePath;
   Future<void> cutImage(String image, dynamic imgByte) async {
-    File imagefile = File(image); //convert Path to File
-    Uint8List imagebytes = await imagefile.readAsBytes(); //convert to bytes
 
-    Map<dynamic, Uint8List> map = {"data": imgByte};
+    final result = await FlutterImageCompress.compressWithList(
+      imgByte,
+      minHeight: 512,
+      minWidth: 512,
+      quality: 80,
+      format: CompressFormat.png,
+    );
+
+
+    //
+    // File imagefile = File(image); //convert Path to File
+    // Uint8List imagebytes = await imagefile.readAsBytes(); //convert to bytes
+
+    Map<dynamic, Uint8List> map = {"data": result};
     try {
       await _channel.invokeMethod('goIntent', map).then((value) {
         val = value;

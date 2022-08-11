@@ -85,27 +85,27 @@ class _FlutterSimpleStickerViewState extends State<FlutterSimpleStickerView> {
     final size = MediaQuery.of(context).size;
     return Column(
       children: <Widget>[
-        Expanded(
+        Spacer(),
+        SizedBox(
+          height: size.width,
+          width: size.width,
           child: RepaintBoundary(
             key: key,
-            child: SizedBox(
-              height: size.width,
-              width: size.width,
-              child: Stack(
-                children: <Widget>[
-                  LayoutBuilder(
-                    builder: (BuildContext context, BoxConstraints constraints) {
-                      viewport = viewport ??
-                          Size(constraints.maxWidth, constraints.maxHeight);
-                      return widget.source;
-                    },
-                  ),
-                  Stack(children: attachedList)
-                ],
-              ),
+            child: Stack(
+              children: <Widget>[
+                LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    viewport = viewport ??
+                        Size(constraints.maxWidth, constraints.maxHeight);
+                    return widget.source;
+                  },
+                ),
+                Stack(children: attachedList)
+              ],
             ),
           ),
         ),
+        Spacer(),
         Scrollbar(
           child: DragTarget(
             builder: (BuildContext context, List<Object?> candidateData,
