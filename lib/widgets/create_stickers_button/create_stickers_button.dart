@@ -3,7 +3,9 @@ import 'package:wpstickermaker/values/colors/my_colors.dart';
 
 class CreateStickerButton extends StatelessWidget {
   final VoidCallback? onTap;
-  const CreateStickerButton({Key? key, this.onTap}) : super(key: key);
+  final double? height;
+  final double? width;
+  const CreateStickerButton({Key? key, this.onTap, this.height, this.width}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -11,9 +13,9 @@ class CreateStickerButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        height: size.width*0.35,
-        width: size.width*0.35,
-        child: Icon(Icons.add, size: size.width*0.2, color: Colors.white,),
+        height: height ?? size.width*0.35,
+        width: width ?? size.width*0.35,
+        child: Icon(Icons.image, size: size.width*0.2, color: Colors.white,),
         decoration: BoxDecoration(
           color: MyColors.lowGrey,
           borderRadius: BorderRadius.circular(9),

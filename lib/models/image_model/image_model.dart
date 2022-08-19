@@ -28,18 +28,27 @@ class ImageData {
   ImageData({
     this.imagePath,
     this.isSelected,
+    this.isDeleted
   });
 
   String? imagePath;
   bool? isSelected;
+  bool? isDeleted;
+
+  setFalse(){
+    isSelected = false;
+  }
+
 
   factory ImageData.fromJson(Map<String, dynamic> json) => ImageData(
     imagePath: json["imagePath"],
     isSelected: json["isSelected"],
+    isDeleted: json["isDeleted"],
   );
 
   Map<String, dynamic> toJson() => {
     "imagePath": imagePath,
     "isSelected": isSelected,
+    "isDeleted": isDeleted,
   };
 }

@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> {
 
   Text buildText() {
     return Text(
-      "Let's create a sticker!",
+      "Press button and create a sticker!",
       style: TextStyle(
           fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'McLaren'),
     );

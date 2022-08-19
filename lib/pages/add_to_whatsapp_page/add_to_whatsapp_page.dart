@@ -5,6 +5,7 @@ import 'package:wpstickermaker/providers/image_editing_provider/image_editing_pr
 import 'package:wpstickermaker/widgets/app_bar/my_app_bar.dart';
 import 'package:wpstickermaker/widgets/sticker_info_form/sticker_info_form.dart';
 
+import '../../widgets/create_stickers_button/create_stickers_button.dart';
 import '../../widgets/saved_image_item/saved_image_item.dart';
 
 class AddToWhatsappPage extends StatefulWidget {
@@ -25,10 +26,24 @@ class _AddToWhatsappPageState extends State<AddToWhatsappPage> {
     packageNameController = TextEditingController();
     publisherNameController = TextEditingController();
     context.read<ImageEditProvider>().selectedImageList.clear();
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      context.read<ImageEditProvider>().clearSelectedList();
+    });
+
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    packageNameController.dispose();
+    publisherNameController.dispose();
+    super.dispose();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Form(
       key: _key,
       child: Scaffold(

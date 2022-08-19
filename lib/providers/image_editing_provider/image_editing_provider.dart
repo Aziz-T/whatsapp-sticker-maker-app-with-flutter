@@ -34,10 +34,50 @@ class ImageEditProvider extends ChangeNotifier {
       const MethodChannel('samples.flutter.dev/battery');
   dynamic val;
   dynamic resizedImage;
+  dynamic trayImage;
   dynamic mainImage;
 
   setVal(dynamic img) {
     val = img;
+    notifyListeners();
+  }
+
+  clearSelectedList(){
+    imageList.forEach((element) {
+      element.setFalse();
+    });
+    notifyListeners();
+  }
+
+  selectDeletedData(int index, bool val) {
+    p("SELECTED IMAGE DATA", val);
+    if (imageList.isNotEmpty) {
+      imageList[index].isDeleted = val;
+      notifyListeners();
+    }
+  }
+
+  Future<void> deleteData(int index) async {
+    if (imageList.isNotEmpty) {
+        imageList.removeAt(index);
+        imageModel.data = imageList;
+        await storage.setItem('images', imageModel.toJson());
+        notifyListeners();
+    }
+  }
+
+  Future<void> setSelected(int index, bool val) async {
+    if (selectedImageList.length < 30) {
+      imageList[index].isSelected = val;
+      if (val) {
+        selectedImageList.add(imageList[index]);
+      } else {
+        selectedImageList.remove(selectedImageList.firstWhere(
+            (element) => element.imagePath == imageList[index].imagePath));
+      }
+    }
+
+    p("Selected image list length", selectedImageList.length);
     notifyListeners();
   }
 
@@ -64,7 +104,6 @@ class ImageEditProvider extends ChangeNotifier {
   ///bu bizim temel imagemiz Uint8 olarak güncelliyoruz her seferinde
   String? croppedFilePath;
   Future<void> cutImage(String image, dynamic imgByte) async {
-
     final result = await FlutterImageCompress.compressWithList(
       imgByte,
       minHeight: 512,
@@ -72,7 +111,6 @@ class ImageEditProvider extends ChangeNotifier {
       quality: 80,
       format: CompressFormat.png,
     );
-
 
     //
     // File imagefile = File(image); //convert Path to File
@@ -110,6 +148,40 @@ class ImageEditProvider extends ChangeNotifier {
     }
   }
 
+  Future<File?> createTrayImage(String path) async {
+    p("CREATE TRAY",path);
+    File? file = File(path);
+    var imgByte = await file.readAsBytes();
+    Map<dynamic, Uint8List> map = {"data": imgByte};
+    try {
+      await _channel.invokeMethod('trayImage', map).then((value) async {
+        trayImage = value;
+        trayImage = Uint8List.fromList(resizedImage);
+        log(value.toString());
+        p("trayImage", val);
+
+        final result = await FlutterImageCompress.compressWithList(
+          trayImage,
+          minHeight: 96,
+          minWidth: 96,
+          quality: 5,
+          format: CompressFormat.png,
+        );
+        final buffer = result.buffer;
+        Directory tempDir = await getApplicationDocumentsDirectory();
+        String tempPath = tempDir.path;
+        var filePath = tempPath +
+            '/tray${DateTime.now().minute}${DateTime.now().microsecond}.png'; // file_01.tmp is dump file, can be anything
+        File file = await File(filePath).writeAsBytes(
+            buffer.asUint8List(result.offsetInBytes, result.lengthInBytes));
+        p("TTTRAR",file);
+        return file;
+      });
+    } on PlatformException catch (e) {
+      print("invoke method catch: $e");
+    }
+  }
+
   Future<void> imageCropSquare(String path, dynamic image,
       {File? file, bool isEdit = false}) async {
     final buffer = image.buffer;
@@ -132,7 +204,7 @@ class ImageEditProvider extends ChangeNotifier {
               toolbarColor: Colors.green,
               toolbarWidgetColor: Colors.white,
               initAspectRatio: CropAspectRatioPreset.original,
-              lockAspectRatio: false),
+              lockAspectRatio: true),
           IOSUiSettings(
             title: 'Cropper',
           ),
@@ -213,21 +285,6 @@ class ImageEditProvider extends ChangeNotifier {
     });
   }
 
-  Future<void> setSelected(int index, bool val) async {
-    if(selectedImageList.length<30){
-      imageList[index].isSelected = val;
-      if (val) {
-        selectedImageList.add(imageList[index]);
-      } else {
-        selectedImageList.remove(selectedImageList.firstWhere(
-                (element) => element.imagePath == imageList[index].imagePath));
-      }
-    }
-
-    p("Selected image list length", selectedImageList.length);
-    notifyListeners();
-  }
-
   Future<void> getImageList() async {
     await storage.ready;
     var items = await storage.getItem('images');
@@ -251,12 +308,18 @@ class ImageEditProvider extends ChangeNotifier {
   Future<void> addToWhatsapp(
       {required String packageName, required String publisherName}) async {
     if (selectedImageList.isNotEmpty) {
+      File? trayFile;
+      // p("TRAY FİLE",selectedImageList.first.imagePath!=null);
+      // // if(selectedImageList.first.imagePath!=null) {
+      // //   trayFile = await createTrayImage(selectedImageList.first.imagePath!);
+      // // }
+      // p("TRAY FİLE",trayFile.toString());
       var stickerPack = WhatsappStickers(
         identifier: packageName,
         name: packageName,
         publisher: publisherName,
-        trayImageFileName:
-            WhatsappStickerImage.fromAsset('assets/stickers/tray_Cuppy1.png'),
+        trayImageFileName: trayFile != null ? WhatsappStickerImage.fromFile(trayFile.toString()) :
+            WhatsappStickerImage.fromAsset('assets/stickers/ww.png'),
       );
 
       selectedImageList.asMap().forEach((key, element) {

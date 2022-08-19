@@ -41,6 +41,12 @@ public class MainActivity extends FlutterActivity {
                                 Log.d("GAGAGA", String.valueOf(bytes));
                                 result.success(resizeImage(bytes, 512,512));
                             }
+                            if(call.method.equals("trayImage")){
+                                Map<String,byte[]> map= call.arguments();
+                                byte[] bytes = map.get("data");
+                                Log.d("GAGAGA", String.valueOf(bytes));
+                                result.success(resizeImage(bytes, 96,96));
+                            }
                         }
                 );
     }

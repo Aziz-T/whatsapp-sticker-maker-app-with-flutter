@@ -13,7 +13,8 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(),
+      appBar: MyAppBar(title: 'Settings'),
+      body: Center(child: Text("This area is under construction. :)",style: TextStyle(fontFamily: 'McLaren'),)),
     );
   }
 }

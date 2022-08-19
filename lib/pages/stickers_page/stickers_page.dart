@@ -17,7 +17,7 @@ class StickersPage extends StatefulWidget {
 }
 
 class _StickersPageState extends State<StickersPage> {
-  bool isSelected = false;
+  bool isDeleted = false;
 
   @override
   Widget build(BuildContext context) {
@@ -38,13 +38,23 @@ class _StickersPageState extends State<StickersPage> {
           // ),
           Expanded(
             child: Consumer<ImageEditProvider>(builder: (context, snapshot, _) {
-              return GridView.count(
+              return snapshot.imageList.isEmpty ? Center(child: Text("No Sticker Yet :)",style: TextStyle(fontFamily: 'McLaren')),) : GridView.count(
                 crossAxisCount: 2,
                 children: List.generate(snapshot.imageList.length, (index) {
                   return SavedImageItem(
                     filePath: snapshot.imageList[index].imagePath,
-                    isSelected: isSelected,
-                    onTap: () {},
+                    isDelete: snapshot.imageList[index].isDeleted??false,
+                    onDeleteTap: (){
+                      snapshot.deleteData(index);
+                    },
+                    onTap: () {
+                      if (snapshot.imageList[index].isDeleted == null) {
+                        snapshot.selectDeletedData(index, true);
+                      } else {
+                        snapshot.selectDeletedData(
+                            index, !snapshot.imageList[index].isDeleted!);
+                      }
+                    },
                   );
                 }),
               );
