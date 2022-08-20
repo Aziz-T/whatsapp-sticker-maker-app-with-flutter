@@ -5,7 +5,9 @@ class CreateStickerButton extends StatelessWidget {
   final VoidCallback? onTap;
   final double? height;
   final double? width;
-  const CreateStickerButton({Key? key, this.onTap, this.height, this.width}) : super(key: key);
+  final double? iconSize;
+  final Color? color;
+  const CreateStickerButton({Key? key, this.onTap, this.height, this.width, this.iconSize, this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,9 +17,9 @@ class CreateStickerButton extends StatelessWidget {
       child: Container(
         height: height ?? size.width*0.35,
         width: width ?? size.width*0.35,
-        child: Icon(Icons.image, size: size.width*0.2, color: Colors.white,),
+        child: Icon(Icons.add_photo_alternate, size: iconSize ?? size.width*0.2, color: Colors.white,),
         decoration: BoxDecoration(
-          color: MyColors.lowGrey,
+          color: color ?? MyColors.lowGrey,
           borderRadius: BorderRadius.circular(9),
           boxShadow: [
             BoxShadow(

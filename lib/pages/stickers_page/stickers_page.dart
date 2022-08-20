@@ -25,7 +25,8 @@ class _StickersPageState extends State<StickersPage> {
       appBar: MyAppBar(
           title: "Stickers List",
           buttonText: "Clear All",
-          onPressed: () {
+          onPressed: context.read<ImageEditProvider>().imageList.isEmpty
+              ? null : () {
             _showMyDialog();
           }),
       body: Column(
@@ -38,42 +39,51 @@ class _StickersPageState extends State<StickersPage> {
           // ),
           Expanded(
             child: Consumer<ImageEditProvider>(builder: (context, snapshot, _) {
-              return snapshot.imageList.isEmpty ? Center(child: Text("No Sticker Yet :)",style: TextStyle(fontFamily: 'McLaren')),) : GridView.count(
-                crossAxisCount: 2,
-                children: List.generate(snapshot.imageList.length, (index) {
-                  return SavedImageItem(
-                    filePath: snapshot.imageList[index].imagePath,
-                    isDelete: snapshot.imageList[index].isDeleted??false,
-                    onDeleteTap: (){
-                      snapshot.deleteData(index);
-                    },
-                    onTap: () {
-                      if (snapshot.imageList[index].isDeleted == null) {
-                        snapshot.selectDeletedData(index, true);
-                      } else {
-                        snapshot.selectDeletedData(
-                            index, !snapshot.imageList[index].isDeleted!);
-                      }
-                    },
-                  );
-                }),
-              );
+              return snapshot.imageList.isEmpty
+                  ? Center(
+                      child: Text("No Sticker Yet :)",
+                          style: TextStyle(fontFamily: 'McLaren')),
+                    )
+                  : GridView.count(
+                      crossAxisCount: 2,
+                      children:
+                          List.generate(snapshot.imageList.length, (index) {
+                        return SavedImageItem(
+                          filePath: snapshot.imageList[index].imagePath,
+                          isDelete:
+                              snapshot.imageList[index].isDeleted ?? false,
+                          onDeleteTap: () {
+                            snapshot.deleteData(index);
+                          },
+                          onTap: () {
+                            if (snapshot.imageList[index].isDeleted == null) {
+                              snapshot.selectDeletedData(index, true);
+                            } else {
+                              snapshot.selectDeletedData(
+                                  index, !snapshot.imageList[index].isDeleted!);
+                            }
+                          },
+                        );
+                      }),
+                    );
             }),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {
-            if(context.read<ImageEditProvider>().imageList.length<4) {
-              showSnackBar("You must create at least 4 stickers!");
-            }else {
-              Get.to(() => const AddToWhatsappPage());
-            }
-          },
-          label: Text("Add Sticker to Wp",
-              style: TextStyle(fontFamily: 'McLaren')),
-          icon: Icon(Icons.add),
-          backgroundColor: Colors.green),
+      floatingActionButton: context.read<ImageEditProvider>().imageList.isEmpty
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: () {
+                if (context.read<ImageEditProvider>().imageList.length < 3) {
+                  showSnackBar("You must create at least 3 stickers!");
+                } else {
+                  Get.to(() => const AddToWhatsappPage());
+                }
+              },
+              label: Text("Add Sticker to Wp",
+                  style: TextStyle(fontFamily: 'McLaren')),
+              icon: Icon(Icons.add),
+              backgroundColor: Colors.green),
     );
   }
 

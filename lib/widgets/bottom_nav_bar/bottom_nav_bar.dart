@@ -34,7 +34,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         ),
       ],
       currentIndex: context.watch<MainPageProvider>().currentIndex,
-      selectedItemColor:  MyColors.darkViolet,
+      selectedItemColor:  MyColors.violet,
       onTap: (index){
         context.read<MainPageProvider>().onItemTapped(index);
       },

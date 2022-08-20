@@ -29,25 +29,23 @@ class _ImageEditPageState extends State<ImageEditPage> {
     final size = MediaQuery.of(context).size;
     return Consumer<ImageEditProvider>(builder: (context, provider, child) {
       return Scaffold(
+          backgroundColor: Color.fromARGB(255, 60, 60, 61),
           appBar: MyAppBar(
               title: "Create Sticker",
+              textColor: Colors.white,
               onPressed: () {
                 provider.saveImage(provider.val);
                 Get.back();
-                if(provider.imageList.length <=1) {
-                  context.read<MainPageProvider>().setCurrentPage = 1;
-                }
+                // if(provider.imageList.length <=1) {
+                //   context.read<MainPageProvider>().setCurrentPage = 1;
+                // }
                 // provider.installFromAssets();
               }),
           body: SizedBox(
             width: size.width,
             child: Column(children: [
-              SizedBox(
-                  height: size.width,
-                  width: size.width,
-                  child: provider.val != null
-                      ? Image.memory(provider.val)
-                      : Image.file(widget.image!)),
+              Spacer(),
+              buildImageSizedBox(size, provider),
               Spacer(),
               EditToolMenu(
                 children: [
@@ -91,5 +89,14 @@ class _ImageEditPageState extends State<ImageEditPage> {
             ]),
           ));
     });
+  }
+
+  SizedBox buildImageSizedBox(Size size, ImageEditProvider provider) {
+    return SizedBox(
+                height: size.width,
+                width: size.width,
+                child: provider.val != null
+                    ? Image.memory(provider.val)
+                    : Image.file(widget.image!));
   }
 }

@@ -31,21 +31,27 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const MyAppBar(title: "Home Page", fontSize: 20),
-      body: homePageBody(context),
-      floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {
-            if (context.read<ImageEditProvider>().imageList.length < 4) {
-              showSnackBar("You must create at least 4 stickers!");
-            } else {
-              Get.to(() => const AddToWhatsappPage());
-            }
-          },
-          label: Text("Add Sticker to Wp",
-              style: TextStyle(
-                fontFamily: 'McLaren',
-              )),
-          icon: Icon(Icons.add),
-          backgroundColor: Colors.green),
+      body: Consumer<ImageEditProvider>(builder: (context, provider, child) {
+        return provider.imageList.isEmpty
+            ? buildNoStickerView(context)
+            : homePageBody(context);
+      }),
+      floatingActionButton: context.read<ImageEditProvider>().imageList.isEmpty
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: () {
+                if (context.read<ImageEditProvider>().imageList.length < 3) {
+                  showSnackBar("You must create at least 3 stickers!");
+                } else {
+                  Get.to(() => const AddToWhatsappPage());
+                }
+              },
+              label: Text("Add Sticker to Wp",
+                  style: TextStyle(
+                    fontFamily: 'McLaren',
+                  )),
+              icon: Icon(Icons.add),
+              backgroundColor: Colors.green),
     );
   }
 
@@ -54,11 +60,67 @@ class _HomePageState extends State<HomePage> {
     return SizedBox(
       width: size.width,
       child: Column(
+        children: [
+          buildTopColumn(size, context),
+          Expanded(
+            child: Consumer<ImageEditProvider>(builder: (context, snapshot, _) {
+              return GridView.count(
+                crossAxisCount: 3,
+                children: List.generate(snapshot.imageList.length, (index) {
+                  return SavedImageItem(
+                    filePath: snapshot.imageList[index].imagePath,
+                    isDelete: snapshot.imageList[index].isDeleted ?? false,
+                    onDeleteTap: () {
+                      snapshot.deleteData(index);
+                    },
+                    onTap: () {
+                      if (snapshot.imageList[index].isDeleted == null) {
+                        snapshot.selectDeletedData(index, true);
+                      } else {
+                        snapshot.selectDeletedData(
+                            index, !snapshot.imageList[index].isDeleted!);
+                      }
+                    },
+                  );
+                }),
+              );
+            }),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Column buildTopColumn(Size size, BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(height: 25),
+        CreateStickerButton(
+          height: size.width * 0.2,
+          width: size.width * 0.2,
+          color: Colors.greenAccent,
+          iconSize: size.width * 0.14,
+          onTap: () {
+            context.read<ImageEditProvider>().getImage();
+          },
+        ),
+        SizedBox(height: 15),
+        buildText("Create a Sticker!"),
+        SizedBox(height: 15),
+        SizedBox(height: 15),
+      ],
+    );
+  }
+
+  Center buildNoStickerView(BuildContext context) {
+    return Center(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         // mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Spacer(),
           CreateStickerButton(
+            color: Colors.greenAccent,
             onTap: () {
               context.read<ImageEditProvider>().getImage();
             },
@@ -66,7 +128,7 @@ class _HomePageState extends State<HomePage> {
           SizedBox(
             height: 12,
           ),
-          buildText(),
+          buildText("Press button and create a sticker!"),
           Spacer(),
           // Row(
           //   children: [
@@ -97,9 +159,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Text buildText() {
+  Text buildText(String text) {
     return Text(
-      "Press button and create a sticker!",
+      text,
       style: TextStyle(
           fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'McLaren'),
     );

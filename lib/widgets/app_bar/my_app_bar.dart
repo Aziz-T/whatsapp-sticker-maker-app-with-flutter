@@ -5,14 +5,15 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? buttonText;
   final Function()? onPressed;
   final double? fontSize;
-  const MyAppBar({Key? key, this.title, this.onPressed, this.fontSize, this.buttonText}) : super(key: key);
+  final Color? textColor;
+  const MyAppBar({Key? key, this.title, this.onPressed, this.fontSize, this.buttonText, this.textColor}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       title: Text(
         title ?? "App",
-        style: TextStyle(fontFamily: 'McLaren', fontSize: fontSize ?? 18),
+        style: TextStyle(fontFamily: 'McLaren', fontSize: fontSize ?? 18,color: textColor ??Colors.black),
       ),
       elevation: 0,
       actions: onPressed == null
@@ -21,12 +22,12 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
               TextButton(
                 onPressed: onPressed,
                 child: Text( buttonText??"Save",
-                    style: TextStyle(fontFamily: 'McLaren', fontSize: 18, color: Colors.black)),
+                    style: TextStyle(fontFamily: 'McLaren', fontSize: 18, color: textColor ?? Colors.black)),
               )
             ],
       backgroundColor: Colors.transparent,
       titleTextStyle: TextStyle(
-          color: Colors.black87, fontSize: 20, fontWeight: FontWeight.bold),
+          color: textColor ??Colors.black87, fontSize: 20, fontWeight: FontWeight.bold),
       automaticallyImplyLeading: false,
     );
   }
