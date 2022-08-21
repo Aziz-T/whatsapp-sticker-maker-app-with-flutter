@@ -84,15 +84,15 @@ class _SettingsPageState extends State<SettingsPage> {
             }
           }),
           Divider(),
-          buildSettingsItem(
-            Icons.monetization_on,
-            "Buy Premium",
-            () {
-
-            },
-            endTitle: "14.99 USD",
-          ),
-          Divider(),
+          // buildSettingsItem(
+          //   Icons.monetization_on,
+          //   "Buy Premium",
+          //   () {
+          //
+          //   },
+          //   endTitle: "14.99 USD",
+          // ),
+          // Divider(),
         ],
       ),
     );

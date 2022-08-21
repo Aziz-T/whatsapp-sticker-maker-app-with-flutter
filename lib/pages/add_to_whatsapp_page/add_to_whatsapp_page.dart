@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:wpstickermaker/core/functions.dart';
 import 'package:wpstickermaker/providers/image_editing_provider/image_editing_provider.dart';
 import 'package:wpstickermaker/widgets/app_bar/my_app_bar.dart';
 import 'package:wpstickermaker/widgets/sticker_info_form/sticker_info_form.dart';
@@ -53,11 +54,16 @@ class _AddToWhatsappPageState extends State<AddToWhatsappPage> {
             buttonText: "Done",
             onPressed: () async {
               if (_key.currentState!.validate()) {
-               await context.read<ImageEditProvider>().addToWhatsapp(
-                  packageName: packageNameController.text,
-                  publisherName: publisherNameController.text
-                );
-                context.read<ImageEditProvider>().selectedImageList.clear();
+                if(context.read<ImageEditProvider>().selectedImageList.length<3){
+                  showSnackBar("Select at least 3 stickers.");
+                }else {
+                  await context.read<ImageEditProvider>().addToWhatsapp(
+                      packageName: packageNameController.text,
+                      publisherName: publisherNameController.text
+                  );
+                  context.read<ImageEditProvider>().selectedImageList.clear();
+                }
+
               }
             }),
         body: Column(
