@@ -4,6 +4,7 @@ import 'package:wpstickermaker/core/functions.dart';
 import 'package:wpstickermaker/providers/image_editing_provider/image_editing_provider.dart';
 import 'package:wpstickermaker/widgets/app_bar/my_app_bar.dart';
 import 'package:wpstickermaker/widgets/sticker_info_form/sticker_info_form.dart';
+import '../../values/styles/TextStyles.dart';
 import '../../widgets/saved_image_item/saved_image_item.dart';
 
 class AddToWhatsappPage extends StatefulWidget {
@@ -76,9 +77,7 @@ class _AddToWhatsappPageState extends State<AddToWhatsappPage> {
                 }
               },
               label: Text("Add Sticker to Wp",
-                  style: TextStyle(
-                    fontFamily: 'McLaren',
-                  )),
+                  style: TextStyles.mcLarenStyle),
               icon: Icon(Icons.add),
               backgroundColor: Colors.green);
         }),
@@ -91,13 +90,13 @@ class _AddToWhatsappPageState extends State<AddToWhatsappPage> {
   Widget buildBody() {
     return Consumer<ImageEditProvider>(builder: (context, snapshot, child) {
       return snapshot.imageList.isEmpty ?
-          Center(child: Text("No Sticker Yet! :)",style: TextStyle(fontFamily: "McLaren")),)
+          Center(child: Text("No Sticker Yet! :)",style: TextStyles.mcLarenStyle),)
           :Column(
         children: [
           StickerInfoForm(
               packageNameController: packageNameController,
               publisherNameController: publisherNameController),
-          Text("Select Sticker",style: TextStyle(fontFamily: 'McLaren'),),
+          Text("Select Sticker",style: TextStyles.mcLarenStyle,),
           Expanded(
             child: GridView.count(
               crossAxisCount: 2,
@@ -130,13 +129,13 @@ class _AddToWhatsappPageState extends State<AddToWhatsappPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title:
-          const Text('Clear All', style: TextStyle(fontFamily: 'McLaren')),
+          const Text('Clear All', style: TextStyles.mcLarenStyle),
           content: SingleChildScrollView(
             child: ListBody(
               children: const <Widget>[
-                // Text('Clear All', style: TextStyle(fontFamily: 'McLaren')),
+                // Text('Clear All', style: TextStyles.mcLarenStyle),
                 Text('Do you want to clear all Stickers?',
-                    style: TextStyle(fontFamily: 'McLaren')),
+                    style: TextStyles.mcLarenStyle),
               ],
             ),
           ),

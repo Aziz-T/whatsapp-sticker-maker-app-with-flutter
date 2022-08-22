@@ -5,6 +5,7 @@ import 'package:wpstickermaker/core/functions.dart';
 import 'package:wpstickermaker/widgets/add_to_whatsapp_button/add_to_whatsapp_button.dart';
 
 import '../../providers/image_editing_provider/image_editing_provider.dart';
+import '../../values/styles/TextStyles.dart';
 import '../../widgets/app_bar/my_app_bar.dart';
 import '../../widgets/saved_image_item/saved_image_item.dart';
 import '../add_to_whatsapp_page/add_to_whatsapp_page.dart';
@@ -42,7 +43,7 @@ class _StickersPageState extends State<StickersPage> {
               return snapshot.imageList.isEmpty
                   ? Center(
                       child: Text("No Sticker Yet :)",
-                          style: TextStyle(fontFamily: 'McLaren')),
+                          style: TextStyles.mcLarenStyle),
                     )
                   : GridView.count(
                       crossAxisCount: 2,
@@ -81,7 +82,7 @@ class _StickersPageState extends State<StickersPage> {
                 }
               },
               label: Text("Add Sticker to Wp",
-                  style: TextStyle(fontFamily: 'McLaren')),
+                  style: TextStyles.mcLarenStyle),
               icon: Icon(Icons.add),
               backgroundColor: Colors.green),
     );
@@ -94,13 +95,13 @@ class _StickersPageState extends State<StickersPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title:
-              const Text('Clear All', style: TextStyle(fontFamily: 'McLaren')),
+              const Text('Clear All', style: TextStyles.mcLarenStyle),
           content: SingleChildScrollView(
             child: ListBody(
               children: const <Widget>[
-                // Text('Clear All', style: TextStyle(fontFamily: 'McLaren')),
+                // Text('Clear All', style: TextStyles.mcLarenStyle),
                 Text('Do you want to clear all Stickers?',
-                    style: TextStyle(fontFamily: 'McLaren')),
+                    style: TextStyles.mcLarenStyle),
               ],
             ),
           ),

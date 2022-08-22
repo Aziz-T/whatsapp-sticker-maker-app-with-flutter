@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:wpstickermaker/core/functions.dart';
+import 'package:wpstickermaker/values/styles/TextStyles.dart';
 
 import '../../widgets/app_bar/my_app_bar.dart';
 
@@ -114,7 +115,7 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Text(
               title,
               style:
-                  TextStyle(fontFamily: 'McLaren', fontWeight: FontWeight.bold),
+                 TextStyles.mcLarenStyle.copyWith(fontWeight: FontWeight.bold),
             ),
           ),
           Spacer(),
@@ -123,7 +124,7 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Text(
               endTitle ?? "",
               style:
-                  TextStyle(fontFamily: 'McLaren', fontWeight: FontWeight.bold),
+              TextStyles.mcLarenStyle.copyWith(fontWeight: FontWeight.bold),
             ),
           )
         ]),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:wpstickermaker/providers/image_editing_provider/image_editing_provider.dart';
+import 'package:wpstickermaker/values/styles/TextStyles.dart';
 import 'package:wpstickermaker/widgets/app_bar/my_app_bar.dart';
 import 'package:wpstickermaker/widgets/create_stickers_button/create_stickers_button.dart';
 
@@ -196,8 +197,8 @@ class _HomePageState extends State<HomePage> {
   Text buildText(String text) {
     return Text(
       text,
-      style: TextStyle(
-          fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'McLaren'),
+      style: TextStyles.mcLarenStyle.copyWith(
+          fontSize: 18, fontWeight: FontWeight.w600),
     );
   }
 
@@ -205,10 +206,9 @@ class _HomePageState extends State<HomePage> {
     return Text(
       "Sticker History",
       textAlign: TextAlign.start,
-      style: TextStyle(
+      style:  TextStyles.mcLarenStyle.copyWith(
         fontSize: 18,
         fontWeight: FontWeight.w600,
-        fontFamily: 'McLaren',
       ),
     );
   }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:wpstickermaker/widgets/app_bar/my_app_bar.dart';
 import 'package:wpstickermaker/widgets/create_stickers_button/create_stickers_button.dart';
 
+import '../../values/styles/TextStyles.dart';
+
 class CreateStickerPackage extends StatefulWidget {
   const CreateStickerPackage({Key? key}) : super(key: key);
 
@@ -39,7 +41,7 @@ class _CreateStickerPackageState extends State<CreateStickerPackage> {
             SizedBox(height: 15),
             Text(
               "Package Icon",
-              style: TextStyle(fontFamily: 'McLaren'),
+              style: TextStyles.mcLarenStyle,
             ),
             SizedBox(height: 15),
             CreateStickerButton(

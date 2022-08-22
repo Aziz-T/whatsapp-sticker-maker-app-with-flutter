@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 
+import '../../values/styles/TextStyles.dart';
+
 class ToolMenuItem extends StatelessWidget {
   final VoidCallback? onTap;
   final IconData? iconData;
@@ -28,7 +30,7 @@ class ToolMenuItem extends StatelessWidget {
               iconData ?? Icons.add_a_photo,
               color: Colors.lightBlue,
             ),
-            FittedBox(child: Text("$title", style: TextStyle(fontFamily: 'McLaren',fontSize: 12,),))
+            FittedBox(child: Text("$title", style:  TextStyles.mcLarenStyle.copyWith(fontSize: 12,),))
           ],
         ),
       ),

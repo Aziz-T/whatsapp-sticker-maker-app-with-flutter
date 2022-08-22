@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../values/styles/TextStyles.dart';
+
 class StickerInfoForm extends StatelessWidget {
   final TextEditingController? packageNameController;
   final TextEditingController? publisherNameController;
@@ -12,10 +14,10 @@ class StickerInfoForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Package Name",style: TextStyle(fontFamily: 'McLaren'),),
+          Text("Package Name",style: TextStyles.mcLarenStyle,),
           buildTextFormField(textEditingController: packageNameController),
           SizedBox(height: 10,),
-          Text("Package Owner",style: TextStyle(fontFamily: 'McLaren')),
+          Text("Package Owner",style: TextStyles.mcLarenStyle),
           buildTextFormField(textEditingController: publisherNameController),
         ],
       ),

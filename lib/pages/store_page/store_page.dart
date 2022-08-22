@@ -48,7 +48,7 @@
 //             }
 //           },
 //           label: Text("Add Sticker to Wp",
-//               style: TextStyle(fontFamily: 'McLaren')),
+//               style: TextStyles.mcLarenStyle),
 //           icon: Icon(Icons.add),
 //           backgroundColor: Colors.green),
 //     );
