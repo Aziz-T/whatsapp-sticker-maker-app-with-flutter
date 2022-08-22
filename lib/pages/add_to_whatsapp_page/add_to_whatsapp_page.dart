@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:wpstickermaker/core/functions.dart';
 import 'package:wpstickermaker/providers/image_editing_provider/image_editing_provider.dart';
 import 'package:wpstickermaker/widgets/app_bar/my_app_bar.dart';
 import 'package:wpstickermaker/widgets/sticker_info_form/sticker_info_form.dart';
-
-import '../../widgets/create_stickers_button/create_stickers_button.dart';
 import '../../widgets/saved_image_item/saved_image_item.dart';
 
 class AddToWhatsappPage extends StatefulWidget {
@@ -51,52 +48,115 @@ class _AddToWhatsappPageState extends State<AddToWhatsappPage> {
         appBar: MyAppBar(
             title: "Create Sticker Package",
             fontSize: 16,
-            buttonText: "Done",
-            onPressed: () async {
-              if (_key.currentState!.validate()) {
-                if(context.read<ImageEditProvider>().selectedImageList.length<3){
-                  showSnackBar("Select at least 3 stickers.");
-                }else {
-                  await context.read<ImageEditProvider>().addToWhatsapp(
-                      packageName: packageNameController.text,
-                      publisherName: publisherNameController.text
-                  );
-                  context.read<ImageEditProvider>().selectedImageList.clear();
-                }
-
-              }
+            buttonText: "Clear All",
+            onPressed: context.read<ImageEditProvider>().imageList.isEmpty
+                ? null : () {
+              _showMyDialog();
             }),
-        body: Column(
-          children: [
-            StickerInfoForm(
-                packageNameController: packageNameController,
-                publisherNameController: publisherNameController),
-            Expanded(child: buildSelectionList())
-          ],
-        ),
+        body: buildBody(),
+        floatingActionButton: Consumer<ImageEditProvider>(builder: (context, snapshot, child) {
+          return snapshot.selectedImageList.length < 3
+              ? SizedBox.shrink()
+              : FloatingActionButton.extended(
+              onPressed: () async {
+                if (_key.currentState!.validate()) {
+                  if(context.read<ImageEditProvider>().selectedImageList.length<3){
+                    showSnackBar("Select at least 3 stickers.");
+                  }else {
+                    await context.read<ImageEditProvider>().addToWhatsapp(
+                        packageName: packageNameController.text,
+                        publisherName: publisherNameController.text
+                    );
+                    context.read<ImageEditProvider>().selectedImageList.clear();
+                    context.read<ImageEditProvider>().clearSelectedList();
+                    publisherNameController.clear();
+                    packageNameController.clear();
+                  }
+
+                }
+              },
+              label: Text("Add Sticker to Wp",
+                  style: TextStyle(
+                    fontFamily: 'McLaren',
+                  )),
+              icon: Icon(Icons.add),
+              backgroundColor: Colors.green);
+        }),
+
+
       ),
     );
   }
 
-  Widget buildSelectionList() {
+  Widget buildBody() {
     return Consumer<ImageEditProvider>(builder: (context, snapshot, child) {
-      return GridView.count(
-        crossAxisCount: 2,
-        children: List.generate(snapshot.imageList.length, (index) {
-          return SavedImageItem(
-            filePath: snapshot.imageList[index].imagePath,
-            isSelected: snapshot.imageList[index].isSelected ?? false,
-            onTap: () {
-              if (snapshot.imageList[index].isSelected == null) {
-                snapshot.setSelected(index, true);
-              } else {
-                snapshot.setSelected(
-                    index, !snapshot.imageList[index].isSelected!);
-              }
-            },
-          );
-        }),
+      return snapshot.imageList.isEmpty ?
+          Center(child: Text("No Sticker Yet! :)",style: TextStyle(fontFamily: "McLaren")),)
+          :Column(
+        children: [
+          StickerInfoForm(
+              packageNameController: packageNameController,
+              publisherNameController: publisherNameController),
+          Text("Select Sticker",style: TextStyle(fontFamily: 'McLaren'),),
+          Expanded(
+            child: GridView.count(
+              crossAxisCount: 2,
+              children: List.generate(snapshot.imageList.length, (index) {
+                return SavedImageItem(
+                  filePath: snapshot.imageList[index].imagePath,
+                  isSelected: snapshot.imageList[index].isSelected ?? false,
+                  onTap: () {
+                    if (snapshot.imageList[index].isSelected == null) {
+                      snapshot.setSelected(index, true);
+                    } else {
+                      snapshot.setSelected(
+                          index, !snapshot.imageList[index].isSelected!);
+                    }
+                  },
+                );
+              }),
+            ),
+          ),
+        ],
       );
     });
+  }
+
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title:
+          const Text('Clear All', style: TextStyle(fontFamily: 'McLaren')),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                // Text('Clear All', style: TextStyle(fontFamily: 'McLaren')),
+                Text('Do you want to clear all Stickers?',
+                    style: TextStyle(fontFamily: 'McLaren')),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Clear'),
+              onPressed: () {
+                context.read<ImageEditProvider>().clearAll();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

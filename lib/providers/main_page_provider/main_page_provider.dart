@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/cupertino.dart';
+import 'package:wpstickermaker/pages/add_to_whatsapp_page/add_to_whatsapp_page.dart';
 
 import '../../pages/home_page/home_page.dart';
 import '../../pages/settings_page/settings_page.dart';
@@ -22,7 +23,7 @@ class MainPageProvider extends ChangeNotifier{
 
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    StickersPage(),
+    AddToWhatsappPage(),
     SettingsPage()
   ];
 

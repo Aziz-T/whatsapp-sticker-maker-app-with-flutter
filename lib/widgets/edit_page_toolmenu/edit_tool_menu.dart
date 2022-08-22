@@ -10,11 +10,11 @@ class EditToolMenu extends StatelessWidget {
     return Container(
       height: children != null ? null : 56,
       width: size.width,
-      margin: EdgeInsets.all(20),
+      // margin: EdgeInsets.ontl(vertical: 20),
       padding: EdgeInsets.all(5),
       decoration: BoxDecoration(
           color: Colors.white, 
-          borderRadius: BorderRadius.all(Radius.circular(15)),
+          // borderRadius: BorderRadius.all(Radius.circular(15)),
           boxShadow: [
         BoxShadow(
           color: Colors.grey.withOpacity(0.2),

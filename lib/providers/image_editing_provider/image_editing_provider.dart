@@ -274,7 +274,7 @@ class ImageEditProvider extends ChangeNotifier {
         '/${DateTime.now().minute}${DateTime.now().microsecond}.webp'; // file_01.tmp is dump file, can be anything
     File file = await File(filePath).writeAsBytes(
         buffer.asUint8List(result.offsetInBytes, result.lengthInBytes));
-    imageList.add(ImageData(imagePath: file.path));
+    imageList.insert(0,ImageData(imagePath: file.path));
     imageModel.data = imageList;
     await storage.setItem('images', imageModel.toJson());
     notifyListeners();
@@ -287,13 +287,16 @@ class ImageEditProvider extends ChangeNotifier {
 
   Future<void> getImageList() async {
     await storage.ready;
-    var items = await storage.getItem('images');
-    if (items != null) {
-      imageModel = ImageModel.fromJson(items);
-      imageList = imageModel.data ?? [];
+    if(imageList.isEmpty){
+      var items = await storage.getItem('images');
+      if (items != null) {
+        imageModel = ImageModel.fromJson(items);
+        imageList = imageModel.data ?? [];
+      }
+      p("GET ITEMSSS", items.toString());
     }
 
-    p("GET ITEMSSS", items.toString());
+
 
     notifyListeners();
   }
@@ -332,11 +335,9 @@ class ImageEditProvider extends ChangeNotifier {
         p("STICKER PACK", stickerPack.trayImageFileName.path.toString());
         p("STICKER PACK", stickerPack.identifier.toString());
         await stickerPack.sendToWhatsApp();
-        Get.back();
       } on WhatsappStickersException catch (e) {
         p("EEEEEEEE", e.cause);
         showSnackBar("Some error! Sorry!");
-        Get.back();
       }
     }
   }

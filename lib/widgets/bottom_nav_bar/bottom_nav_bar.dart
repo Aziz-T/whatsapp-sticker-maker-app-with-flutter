@@ -25,8 +25,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.image),
-          label: 'Stickers',
+          icon: Icon(Icons.add_box),
+          label: 'Add Stickers',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.settings_sharp),

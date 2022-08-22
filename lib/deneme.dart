@@ -10,17 +10,20 @@ import 'package:in_app_purchase_android/billing_client_wrappers.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
-
 import 'consumable_store.dart';
 
 
 final bool _kAutoConsume = Platform.isIOS || true;
 
-const String _kConsumableId = "full_premium";
-const String _kUpgradeId = "full_premium";
+const String _kConsumableId = 'full_premium';
+const String _kUpgradeId = 'upgrade';
+const String _kSilverSubscriptionId = 'subscription_silver';
+const String _kGoldSubscriptionId = 'subscription_gold';
 const List<String> _kProductIds = <String>[
   _kConsumableId,
   _kUpgradeId,
+  _kSilverSubscriptionId,
+  _kGoldSubscriptionId,
 ];
 
 class Deneme extends StatefulWidget {
@@ -260,7 +263,22 @@ class DenemeState extends State<Deneme> {
               late PurchaseParam purchaseParam;
 
               if (Platform.isAndroid) {
+                // NOTE: If you are making a subscription purchase/upgrade/downgrade, we recommend you to
+                // verify the latest status of you your subscription by using server side receipt validation
+                // and update the UI accordingly. The subscription purchase status shown
+                // inside the app may not be accurate.
+                final GooglePlayPurchaseDetails? oldSubscription =
+                _getOldSubscription(productDetails, purchases);
 
+                purchaseParam = GooglePlayPurchaseParam(
+                    productDetails: productDetails,
+                    changeSubscriptionParam: (oldSubscription != null)
+                        ? ChangeSubscriptionParam(
+                      oldPurchaseDetails: oldSubscription,
+                      prorationMode:
+                      ProrationMode.immediateWithTimeProration,
+                    )
+                        : null);
               } else {
                 purchaseParam = PurchaseParam(
                   productDetails: productDetails,
@@ -460,7 +478,27 @@ class DenemeState extends State<Deneme> {
     }
   }
 
-
+  GooglePlayPurchaseDetails? _getOldSubscription(
+      ProductDetails productDetails, Map<String, PurchaseDetails> purchases) {
+    // This is just to demonstrate a subscription upgrade or downgrade.
+    // This method assumes that you have only 2 subscriptions under a group, 'subscription_silver' & 'subscription_gold'.
+    // The 'subscription_silver' subscription can be upgraded to 'subscription_gold' and
+    // the 'subscription_gold' subscription can be downgraded to 'subscription_silver'.
+    // Please remember to replace the logic of finding the old subscription Id as per your app.
+    // The old subscription is only required on Android since Apple handles this internally
+    // by using the subscription group feature in iTunesConnect.
+    GooglePlayPurchaseDetails? oldSubscription;
+    if (productDetails.id == _kSilverSubscriptionId &&
+        purchases[_kGoldSubscriptionId] != null) {
+      oldSubscription =
+      purchases[_kGoldSubscriptionId]! as GooglePlayPurchaseDetails;
+    } else if (productDetails.id == _kGoldSubscriptionId &&
+        purchases[_kSilverSubscriptionId] != null) {
+      oldSubscription =
+      purchases[_kSilverSubscriptionId]! as GooglePlayPurchaseDetails;
+    }
+    return oldSubscription;
+  }
 }
 
 /// Example implementation of the
