@@ -25,7 +25,7 @@ import '../../values/strings/strings.dart';
 
 class ImageEditProvider extends ChangeNotifier {
   final MethodChannel _channel =
-      const MethodChannel('samples.flutter.dev/battery');
+      const MethodChannel('aven.flutter.dev/cropper');
 
   final LocalStorage storage = LocalStorage('sticker_app');
   // final ImagePicker _picker = ImagePicker();

@@ -19,7 +19,7 @@ import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodChannel;
 
 public class MainActivity extends FlutterActivity {
-    private static final String CHANNEL = "samples.flutter.dev/battery";
+    private static final String CHANNEL = "aven.flutter.dev/cropper";
     MethodChannel.Result res;
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
