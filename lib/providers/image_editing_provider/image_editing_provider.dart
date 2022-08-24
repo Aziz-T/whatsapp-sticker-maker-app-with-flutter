@@ -20,18 +20,24 @@ import 'package:wpstickermaker/models/image_model/image_model.dart';
 
 import '../../core/storage_manager.dart';
 import '../../pages/image_editing_page/image_edit_page.dart';
+import '../../values/icons/emojis.dart';
 import '../../values/strings/strings.dart';
 
 class ImageEditProvider extends ChangeNotifier {
-  final ImagePicker _picker = ImagePicker();
-  String? imagePath;
-  ImageModel imageModel = ImageModel();
-  List<ImageData> imageList = [];
-  List<ImageData> selectedImageList = [];
-  final LocalStorage storage = LocalStorage('sticker_app');
-
   final MethodChannel _channel =
       const MethodChannel('samples.flutter.dev/battery');
+
+  final LocalStorage storage = LocalStorage('sticker_app');
+  // final ImagePicker _picker = ImagePicker();
+
+  String? imagePath;
+  String? croppedFilePath;
+
+  ImageModel imageModel = ImageModel();
+
+  List<ImageData> imageList = [];
+  List<ImageData> selectedImageList = [];
+
   dynamic val;
   dynamic resizedImage;
   dynamic trayImage;
@@ -42,7 +48,7 @@ class ImageEditProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  clearSelectedList(){
+  clearSelectedList() {
     imageList.forEach((element) {
       element.setFalse();
     });
@@ -59,10 +65,10 @@ class ImageEditProvider extends ChangeNotifier {
 
   Future<void> deleteData(int index) async {
     if (imageList.isNotEmpty) {
-        imageList.removeAt(index);
-        imageModel.data = imageList;
-        await storage.setItem('images', imageModel.toJson());
-        notifyListeners();
+      imageList.removeAt(index);
+      imageModel.data = imageList;
+      await storage.setItem('images', imageModel.toJson());
+      notifyListeners();
     }
   }
 
@@ -102,19 +108,10 @@ class ImageEditProvider extends ChangeNotifier {
   }
 
   ///bu bizim temel imagemiz Uint8 olarak güncelliyoruz her seferinde
-  String? croppedFilePath;
-  Future<void> cutImage(String image, dynamic imgByte) async {
-    final result = await FlutterImageCompress.compressWithList(
-      imgByte,
-      minHeight: 512,
-      minWidth: 512,
-      quality: 80,
-      format: CompressFormat.png,
-    );
 
-    //
-    // File imagefile = File(image); //convert Path to File
-    // Uint8List imagebytes = await imagefile.readAsBytes(); //convert to bytes
+  Future<void> cutImage(String image, dynamic imgByte) async {
+    final result = await compressImage(trayImage, 2,
+        minWidth: 512, minHeight: 512, quality: 80);
 
     Map<dynamic, Uint8List> map = {"data": result};
     try {
@@ -148,8 +145,9 @@ class ImageEditProvider extends ChangeNotifier {
     }
   }
 
+  ///todo : implementation will be made
   Future<File?> createTrayImage(String path) async {
-    p("CREATE TRAY",path);
+    p("CREATE TRAY", path);
     File? file = File(path);
     var imgByte = await file.readAsBytes();
     Map<dynamic, Uint8List> map = {"data": imgByte};
@@ -159,14 +157,15 @@ class ImageEditProvider extends ChangeNotifier {
         trayImage = Uint8List.fromList(resizedImage);
         log(value.toString());
         p("trayImage", val);
-
-        final result = await FlutterImageCompress.compressWithList(
-          trayImage,
-          minHeight: 96,
-          minWidth: 96,
-          quality: 5,
-          format: CompressFormat.png,
-        );
+        final result = await compressImage(trayImage, 2,
+            minWidth: 96, minHeight: 96, quality: 5);
+        // final result = await FlutterImageCompress.compressWithList(
+        //   trayImage,
+        //   minHeight: 96,
+        //   minWidth: 96,
+        //   quality: 5,
+        //   format: CompressFormat.png,
+        // );
         final buffer = result.buffer;
         Directory tempDir = await getApplicationDocumentsDirectory();
         String tempPath = tempDir.path;
@@ -174,12 +173,13 @@ class ImageEditProvider extends ChangeNotifier {
             '/tray${DateTime.now().minute}${DateTime.now().microsecond}.png'; // file_01.tmp is dump file, can be anything
         File file = await File(filePath).writeAsBytes(
             buffer.asUint8List(result.offsetInBytes, result.lengthInBytes));
-        p("TTTRAR",file);
+        p("TTTRAR", file);
         return file;
       });
     } on PlatformException catch (e) {
       print("invoke method catch: $e");
     }
+    return null;
   }
 
   Future<void> imageCropSquare(String path, dynamic image,
@@ -224,57 +224,36 @@ class ImageEditProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  var emojis = {
-    '0': ['☕', '🙂'],
-    '1': ['😄', '😀'],
-    '2': ['😆', '😂'],
-    '3': ['😃', '😍'],
-    '4': ['😭', '💧'],
-    '5': ['😍', '♥'],
-    '6': ['😍', '💑'],
-    '7': ['😘', '🍪'],
-    '8': ['🤔', '😐'],
-    '9': ['😱', '😵'],
-    '10': ['😡', '😠'],
-    '11': ['❓', '🤔'],
-    '12': ['🌈', '😜'],
-    '13': ['💻', '😩'],
-    '14': ['😘', '😤'],
-    '15': ['😩', '😨'],
-    '16': ['☕', '😨'],
-    '17': ['😍', '😨'],
-    '18': ['💧', '😨'],
-    '19': ['♥', '😨'],
-    '20': ['💑', '😨'],
-    '21': ['🍪', '😨'],
-    '22': ['😐', '😨'],
-    '23': ['😔', '😠'],
-    '24': ['😱', '😨'],
-    '25': ['😔', '😨'],
-    '26': ['😱', '😨'],
-    '27': ['😔', '😨'],
-    '28': ['😱', '😨'],
-    '29': ['😔', '😨'],
-  };
-
-  Future<void> saveImage(dynamic imageData) async {
-    await resizeImage(imageData);
-    var resized = resizedImage;
-    final result = await FlutterImageCompress.compressWithList(
-      resized,
-      minHeight: 512,
-      minWidth: 512,
-      quality: 80,
-      format: CompressFormat.webp,
+  Future<Uint8List> compressImage(dynamic data, int type,
+      {required int minHeight,
+      required int minWidth,
+      required int quality}) async {
+    return await FlutterImageCompress.compressWithList(
+      data,
+      minHeight: minHeight,
+      minWidth: minWidth,
+      quality: quality,
+      format: type == 1 ? CompressFormat.webp : CompressFormat.png,
     );
+  }
+
+  Future<File> createWebpFile(dynamic result) async {
     final buffer = result.buffer;
     Directory tempDir = await getApplicationDocumentsDirectory();
     String tempPath = tempDir.path;
     var filePath = tempPath +
         '/${DateTime.now().minute}${DateTime.now().microsecond}.webp'; // file_01.tmp is dump file, can be anything
-    File file = await File(filePath).writeAsBytes(
+    return await File(filePath).writeAsBytes(
         buffer.asUint8List(result.offsetInBytes, result.lengthInBytes));
-    imageList.insert(0,ImageData(imagePath: file.path));
+  }
+
+  Future<void> saveImage(dynamic imageData) async {
+    await resizeImage(imageData);
+    var resized = resizedImage;
+    var result = await compressImage(resized, 1,
+        minHeight: 512, minWidth: 512, quality: 80);
+    File file = await createWebpFile(result);
+    imageList.insert(0, ImageData(imagePath: file.path));
     imageModel.data = imageList;
     await storage.setItem('images', imageModel.toJson());
     notifyListeners();
@@ -287,7 +266,7 @@ class ImageEditProvider extends ChangeNotifier {
 
   Future<void> getImageList() async {
     await storage.ready;
-    if(imageList.isEmpty){
+    if (imageList.isEmpty) {
       var items = await storage.getItem('images');
       if (items != null) {
         imageModel = ImageModel.fromJson(items);
@@ -295,9 +274,6 @@ class ImageEditProvider extends ChangeNotifier {
       }
       p("GET ITEMSSS", items.toString());
     }
-
-
-
     notifyListeners();
   }
 
@@ -321,15 +297,16 @@ class ImageEditProvider extends ChangeNotifier {
         identifier: packageName,
         name: packageName,
         publisher: publisherName,
-        trayImageFileName: trayFile != null ? WhatsappStickerImage.fromFile(trayFile.toString()) :
-            WhatsappStickerImage.fromAsset('assets/stickers/ww.png'),
+        trayImageFileName: trayFile != null
+            ? WhatsappStickerImage.fromFile(trayFile.toString())
+            : WhatsappStickerImage.fromAsset('assets/stickers/ww.png'),
       );
 
       selectedImageList.asMap().forEach((key, element) {
         p("per element for add", element);
         stickerPack.addSticker(
             WhatsappStickerImage.fromFile(element.imagePath ?? ""),
-            emojis["$key"] ?? ['😍', '♥']);
+            Emojis.emojis["$key"] ?? ['😍', '♥']);
       });
       try {
         p("STICKER PACK", stickerPack.trayImageFileName.path.toString());
